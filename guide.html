@@ -2,19 +2,23 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex"><!-- 試験公開中（実機の確認が済んだら外す） -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>使い方・よくある質問｜__TITLE__｜yorozu-craft</title>
-  <meta name="description" content="__TITLE__の使い方、計算の根拠、よくある質問、ご利用上の注意。">
+  <title>使い方・学年別の振り方・精度｜ふりがなメーカー｜yorozu-craft</title>
+  <meta name="description" content="ふりがなメーカーの使い方。学年別にふりがな（ルビ）を振る決まり、自信のない読みの印、青空文庫の人手ルビと比べた精度、Word に貼るとき、データの扱い。">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://yorozu-craft.com/__REPO__/guide.html">
+  <link rel="canonical" href="https://yorozu-craft.com/furigana/guide.html">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/furigana/guide.html">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/furigana/en/guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/furigana/guide.html">
 
-  <meta property="og:title" content="使い方・よくある質問｜__TITLE__">
-  <meta property="og:description" content="__TITLE__の使い方、計算の根拠、よくある質問、ご利用上の注意。">
+  <meta property="og:title" content="使い方・学年別の振り方・精度｜ふりがなメーカー">
+  <meta property="og:description" content="学年別にふりがなを振る決まり、自信のない読みの印、測った精度、データの扱い。">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://yorozu-craft.com/__REPO__/guide.html">
+  <meta property="og:url" content="https://yorozu-craft.com/furigana/guide.html">
   <meta property="og:site_name" content="yorozu-craft">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:image" content="https://yorozu-craft.com/__REPO__/og-image.png">
+  <meta property="og:image" content="https://yorozu-craft.com/furigana/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -27,13 +31,18 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "無料で使えますか？",
-        "acceptedAnswer": { "@type": "Answer", "text": "はい。会員登録やインストールも不要で、ブラウザだけで使えます。" }
+        "name": "Word（ワード）の文章にルビを一括で振れますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "このページで振ってから「ルビつき HTML」でコピーし、Word に貼り付けます。貼った先でルビとして残るかは、Word と Google ドキュメントではまだ確かめていません。残らないときは「括弧」の形式でコピーしてください。" }
       },
       {
         "@type": "Question",
-        "name": "入力した内容はどこに保存されますか？",
-        "acceptedAnswer": { "@type": "Answer", "text": "お使いのブラウザの中にだけ保存され、外部のサーバーには送信されません。" }
+        "name": "貼った文はどこかに送られますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "送られません。解析はこの端末のブラウザの中で行います。通信は辞書のファイルをこのサイトから取るときだけで、文は含みません。" }
+      },
+      {
+        "@type": "Question",
+        "name": "ふりがなの読みがまちがっているときは？",
+        "acceptedAnswer": { "@type": "Answer", "text": "見本の語をタップして読みを入れると直ります。直した読みはこの端末に保存され、次の文にも使われます。「直した読み」の一覧から消せます。" }
       }
     ]
   }
@@ -51,40 +60,60 @@
 <body>
 
   <header class="app-header">
-    <h1>__TITLE__ の使い方</h1>
-    <p class="subtitle">使い方・計算の根拠・よくある質問・ご利用上の注意</p>
+    <h1>ふりがなメーカー の使い方</h1>
+    <p class="subtitle">学年別の振り方・精度・よくある質問・ご利用上の注意</p>
+    <p class="lang-switch"><a href="./en/guide.html" hreflang="en" lang="en">English</a></p>
   </header>
 
   <main class="app-main">
 
-    <p class="card" style="text-align:center"><a href="./">▶ __TITLE__ を使う</a></p>
+    <p class="card" style="text-align:center"><a href="./">▶ ふりがなメーカー を使う</a></p>
 
     <article class="card content" id="howto">
       <h2>使い方</h2>
       <ol>
-        <li>（手順を書く）</li>
+        <li>文を貼る（1 回に 10,000 字まで）。初めてのときは辞書（約 13MB）を読み込みます。</li>
+        <li>「読む人」で学年を選ぶ。</li>
+        <li>見本で点線の語を確かめ、違う読みはタップして直す。</li>
+        <li>「印刷する」で A4 に印刷するか、形式を選んでコピーする。</li>
       </ol>
     </article>
 
-    <!-- 制度・単価など時点のある値を使うツールだけ残す。値は constants.js、画面にも時点を出す -->
-    <article class="card content" id="basis">
-      <h2>根拠と確認日</h2>
-      <dl class="info-list">
-        <dt>根拠</dt>
-        <dd>（法令・公式ページの名前）</dd>
-        <dt>最終確認日</dt>
-        <dd><time datetime="__DATE__">__DATE_JA__</time></dd>
-      </dl>
-      <p class="small">制度や単価は変わることがあります。最終確認日から時間がたっている場合は、公式ページで最新の情報をご確認ください。</p>
+    <article class="card content" id="rules">
+      <h2>学年別のふりがなの振り方</h2>
+      <p>「N年生」を選ぶと、N−1年生までに習う漢字だけでできた語には振りません。N年生で習う字から上を 1 字でも含む語には、語全体に振ります。</p>
+      <p class="demo-ruby" lang="ja">3年生: <ruby>図書館<rt>としょかん</rt></ruby>へ行く（館が 3 年生の字）</p>
+      <ul>
+        <li>学年の字は「学年別漢字配当表」（1,026 字）、中学生・大人は「常用漢字表」（2,136 字）で決めます。</li>
+        <li>人名などの固有名詞と、辞書にない語には振りません。市区町村名・都道府県名は総務省の表の読みで振ります。</li>
+        <li>点線は自信のない読みです。漢字 1 字だけの語（額・前）、辞書で分かれた語（三毛猫 → 三/毛/猫）、追加辞書のうち読みが 2 つ以上ある語（大勢）に付きます。ほかの読み分けのある語（下手・黒子など）には付かないことがあります。印刷には出ません（設定で出せます）。</li>
+        <li>算用数字の後の「月」は「がつ」、「10日」などは日付の読み（とおか）で振ります。「1日」は ついたち／いちにち のどちらもあるので点線です。</li>
+      </ul>
+    </article>
+
+    <article class="card content" id="accuracy">
+      <h2>精度（人手のルビと比べた結果）</h2>
+      <p>青空文庫の児童文学 7 作品の人手のルビと比べると、点線なしのルビは 96.5%（864 中 834）、点線つきのルビは 81.3%（579 中 471）が同じ読みでした（2026年9月24日に測定）。</p>
+      <details>
+        <summary>測り方</summary>
+        <ul>
+          <li>作品: ごん狐・手袋を買いに・花のき村と盗人たち（新美南吉）、走れメロス（太宰治）、セロ弾きのゴーシュ・注文の多い料理店・よだかの星（宮沢賢治）。人手のルビ 1,604 個。</li>
+          <li>このツールと同じ解析器（lindera 2.0.0 と IPADIC）・同じ決まりで「すべての漢字」に振り、ルビの範囲ごとに読みを比べました。比べられたのは 1,443 個。ツールが振らなかったもの 68 個、範囲がずれて比べられなかったもの 92 個、旧仮名の差だけのもの 1 個は数えていません。</li>
+          <li>大人向けの文学を含む 12 作品（坊っちゃん・銀河鉄道の夜など）では、点線なしが 89.9%（3,028 中 2,722）でした。古い語や作者独自の読みが多いためです。</li>
+          <li>計測のスクリプトは <code>tools/measure-tool.mjs</code>（ツールのリポジトリ）です。</li>
+        </ul>
+      </details>
     </article>
 
     <article class="card content" id="faq">
       <h2>よくある質問</h2>
       <dl class="faq">
-        <dt>無料で使えますか？</dt>
-        <dd>はい。会員登録やインストールも不要で、ブラウザだけで使えます。</dd>
-        <dt>入力した内容はどこに保存されますか？</dt>
-        <dd>お使いのブラウザの中にだけ保存され、外部のサーバーには送信されません。</dd>
+        <dt>Word（ワード）の文章にルビを一括で振れますか？</dt>
+        <dd>このページで振ってから「ルビつき HTML」でコピーし、Word に貼り付けます。貼った先でルビとして残るかは、Word と Google ドキュメントではまだ確かめていません。残らないときは「括弧」の形式でコピーしてください。</dd>
+        <dt>貼った文はどこかに送られますか？</dt>
+        <dd>送られません。解析はこの端末のブラウザの中で行います。通信は辞書のファイルをこのサイトから取るときだけで、文は含みません。</dd>
+        <dt>ふりがなの読みがまちがっているときは？</dt>
+        <dd>見本の語をタップして読みを入れると直ります。直した読みはこの端末に保存され、次の文にも使われます。「直した読み」の一覧から消せます。</dd>
       </dl>
     </article>
 
@@ -92,19 +121,30 @@
     <article class="card content" id="notes">
       <h2>ご利用上の注意・データの扱い</h2>
       <ul>
-        <li><strong>保存されるデータ</strong>：（何をブラウザに保存するか。保存しないならそう書く）</li>
-        <li><strong>バックアップ</strong>：「ファイルに書き出す」で、（保存している内容）を JSON ファイルにできます。ファイルはこの端末の中で作り、どこにも送信しません。機種変更のときやブラウザのデータを消す前に書き出しておき、新しい端末ではファイルを移して「ファイルから読み込む」を押してください（今の内容はファイルの内容に置き換わります）。（ブラウザに保存しないツールではこの行を消す）</li>
-        <li><strong>共有リンク</strong>：（共有機能があれば、リンクに何が含まれるか。URL の「#」以降に入るのでサーバーには送信されない）</li>
-        <li><strong>結果の扱い</strong>：（計算結果は目安であること、最終的な確認先など）</li>
+        <li><strong>保存されるデータ</strong>：入力内容はこの端末のブラウザ（localStorage、キー <code>furigana_*</code>）にだけ保存され、外部には送信されません。書き出し・読み込み・消去はこの画面のボタンから。</li>
+        <li><strong>辞書の通信</strong>：初めて解析するときに辞書のファイル（約 13MB）をこのサイトから取り、ブラウザに保存します。次からは通信せず、オフラインでも動きます。</li>
+        <li><strong>バックアップ</strong>：「ファイルに書き出す」で、本文・設定・直した読みを JSON ファイルにできます。ファイルはこの端末の中で作り、どこにも送信しません。</li>
+        <li><strong>読みの扱い</strong>：読みは辞書による自動のもので、まちがうことがあります。配る前に確かめてください。</li>
       </ul>
-      <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSd8B90qh5lEIyr25iw1jOjdQjOyaPZ1_z2wMB4kH-EmEeJYWw/viewform?usp=pp_url&amp;entry.585564634=__REPO__" target="_blank" rel="noopener">ご要望・不具合の報告（Google フォーム）</a>：いただいた内容をもとに直します。お返事はしていません。</p>
+      <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSd8B90qh5lEIyr25iw1jOjdQjOyaPZ1_z2wMB4kH-EmEeJYWw/viewform?usp=pp_url&amp;entry.585564634=furigana" target="_blank" rel="noopener">ご要望・不具合の報告（Google フォーム）</a>：いただいた内容をもとに直します。お返事はしていません。</p>
+      <p>出典: 学年別漢字配当表（文部科学省）・常用漢字表（文化庁）。最終確認日 2026年9月24日。</p>
+      <details>
+        <summary>データの出典とライセンス</summary>
+        <ul>
+          <li>解析器: <a href="https://github.com/lindera/lindera-wasm" target="_blank" rel="noopener">lindera-wasm</a> 2.0.0（MIT License。<a href="./dict/lindera-2.0.0/LICENSE-lindera-wasm.txt">表示</a>）</li>
+          <li>辞書: IPADIC（mecab-ipadic 2.7.0。奈良先端科学技術大学院大学と ICOT の利用条件。<a href="./dict/lindera-2.0.0/NOTICE-IPADIC.txt">表示</a>）</li>
+          <li>市区町村名・都道府県名の読み: 「<a href="https://www.soumu.go.jp/denshijiti/code.html" target="_blank" rel="noopener">全国地方公共団体コード</a>」（総務省、令和6年1月1日更新）を加工して作成（公共データ利用規約 第1.0版）。半角カナの読みをひらがなにし、同じ表記で読みが違う 7 つの名前（朝日町など）は外しました。</li>
+          <li>よく使う複合語の読み（103 語）: 語は自分で選び、読みはデジタル大辞泉（小学館）の見出しをコトバンクで確かめました。</li>
+          <li>学年別漢字配当表: 文部科学省「小学校学習指導要領（平成29年告示）」国語 別表。常用漢字表: 平成22年内閣告示第2号（文化庁）。字の一覧だけを使っています。</li>
+        </ul>
+      </details>
       <p>サイト全体の運営者情報・免責事項は<a href="../about.html">こちら</a>、プライバシーポリシーは<a href="../privacy-policy.html">こちら</a>です（すべてのツールで共通）。</p>
     </article>
 
     <article class="card content" id="changelog">
       <h2>更新履歴</h2>
       <ul>
-        <li><time datetime="__DATE__">__DATE_JA__</time> 公開</li>
+        <li><time datetime="2026-09-24">2026年9月24日</time> 公開</li>
       </ul>
     </article>
 
@@ -114,7 +154,7 @@
     <nav class="footer-nav" aria-label="フッターナビゲーション">
       <ul>
         <li><a href="../">yorozu-craft トップ</a></li>
-        <li><a href="./">__TITLE__</a></li>
+        <li><a href="./">ふりがなメーカー</a></li>
         <li><a href="./guide.html" aria-current="page">使い方・よくある質問</a></li>
         <li><a href="../about.html">運営者情報</a></li>
         <li><a href="../privacy-policy.html">プライバシーポリシー</a></li>
