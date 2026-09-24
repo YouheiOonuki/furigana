@@ -29,13 +29,13 @@
         6: '5年生までに習う字だけの語には振りません。', 7: '小学校で習う字だけの語には振りません。',
         8: '常用漢字表にない字を含む語だけに振ります。',
       },
-      markTitle: { one: '1 字の語（読みが文脈で変わることがある）', split: '辞書で分かれた語（読みを確かめてください）', amb: '読みが 2 つ以上ある語' },
+      markTitle: { one: '1 字の語（読みが文脈で変わることがある）', split: '辞書で分かれた語（読みを確かめてください）', amb: '読みが 2 つ以上ある語', okuri: '送り仮名が辞書と違う語（読みを確かめてください）' },
       fixNote: function (u) {
         if (u.skip === 'proper') return '人名・地名などは振っていません。読みを入れると振ります。';
         if (u.skip === 'unknown' || u.skip === 'align') return '辞書に無い語なので振っていません。読みを入れると振ります。';
         if (u.skip === 'user') return '「振らない」にしてあります。';
         if (u.src === 'user') return '直した読みです。';
-        if (u.mark === 'amb') return '読みが 2 つ以上ある語です。';
+        if (u.mark === 'amb') return '読みが 2 つ以上ある語です' + (u.alts ? '（' + u.alts.join('・') + '）' : '') + '。';
         if (u.mark) return '自信のない読みです。';
         return '';
       },
@@ -74,13 +74,13 @@
         6: 'No furigana on words made only of Grade 1–5 kanji.', 7: 'No furigana on words made only of elementary-school kanji.',
         8: 'Furigana only on words with kanji outside the Jōyō list.',
       },
-      markTitle: { one: 'One-kanji word: the reading may depend on context', split: 'Split by the dictionary: please check', amb: 'This word has more than one reading' },
+      markTitle: { one: 'One-kanji word: the reading may depend on context', split: 'Split by the dictionary: please check', amb: 'This word has more than one reading', okuri: 'Okurigana differ from the dictionary: please check' },
       fixNote: function (u) {
         if (u.skip === 'proper') return 'Names are left without furigana. Enter a reading to add one.';
         if (u.skip === 'unknown' || u.skip === 'align') return 'Not in the dictionary. Enter a reading to add one.';
         if (u.skip === 'user') return 'Set to “no furigana”.';
         if (u.src === 'user') return 'Your corrected reading.';
-        if (u.mark === 'amb') return 'This word has more than one reading.';
+        if (u.mark === 'amb') return 'This word has more than one reading' + (u.alts ? ' (' + u.alts.join(', ') + ')' : '') + '.';
         if (u.mark) return 'The tool is not sure about this reading.';
         return '';
       },
@@ -229,7 +229,7 @@
   function relayout() {
     if (!last.text) { render(); return; }
     var toks = Calc.alignTokens(last.text, last.raw);
-    last.units = Calc.annotate(last.text, toks, { reader: settings.reader }, { levels: levels, user: userDict, extra: extra || {} });
+    last.units = Calc.annotate(last.text, toks, { reader: settings.reader }, { levels: levels, user: userDict, extra: extra || {}, amb: C.ambiguousReadings.value });
     last.pieces = Calc.toPieces(last.units, settings.script);
     render();
     status(T.summary(Calc.summarize(last.units)));

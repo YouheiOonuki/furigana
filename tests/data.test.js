@@ -69,3 +69,14 @@ test('追加辞書: 地名と複合語（200 語まで）があり、読みは�
   assert.ok(d.placesDropped.includes('朝日町'));
   assert.equal(d.entries['朝日町'], undefined);
 });
+
+test('読み分けのある語: constants.js の表は tools/ambiguous-verified.tsv（辞書で確かめたもの）と同じで、どれも読みが 2 つ以上・出典 URL つき', () => {
+  const rows = fs.readFileSync(path.join(__dirname, '..', 'tools', 'ambiguous-verified.tsv'), 'utf8').split('\n').filter(Boolean).map((l) => l.split('\t'));
+  const fromTsv = Object.fromEntries(rows.map((r) => [r[0], r[1].split(',')]));
+  assert.deepEqual(CONSTANTS.ambiguousReadings.value, fromTsv);
+  for (const r of rows) {
+    assert.ok(r[1].split(',').length >= 2, r[0]);
+    assert.match(r[3], /^https:\/\/kotobank\.jp\/word\//, r[0]);
+    assert.ok(Calc.hasKanji(r[0]) && r[1].split(',').every((x) => /^[ぁ-ゖー]+$/.test(x)), r[0]);
+  }
+});

@@ -6,7 +6,7 @@
 import init, { TokenizerBuilder } from './dict/lindera-2.0.0/lindera_wasm.js';
 
 // キャッシュ名は "furigana-" で始める（README「ツールを追加するとき」7。sw.js と同じ名前）
-const CACHE_NAME = 'furigana-v1';
+const CACHE_NAME = 'furigana-v2';
 let tokenizer = null;
 let loading = null;
 

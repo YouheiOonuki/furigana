@@ -116,6 +116,22 @@
     return best && hasKanji(best.s) ? best : null;
   }
 
+  // --- 送り仮名の重なり（俄か → 俄 + か）---
+  // IPADIC には送り仮名を含まない見出し（俄 = にわか、身近 = みぢか）や、古い送り仮名（短かい・悪るい・或る・疑ぐる）に当たる語がある。
+  // 解析器はそのとき「漢字だけのトークン（読みは語全体）」と「後ろの仮名」に分けるので、読みの終わりが本文の続きの仮名と重なる。
+  // 重なった分を読みから外し、ルビは漢字の分だけにする（俄 → にわ）。
+  // 名詞（中から・今まで・お金ね）では重なりがふつうに起きるので、形容動詞の語幹・形容詞・動詞・連体詞だけに限る
+  function trimOverlap(text, t) {
+    if (!(t.pos1 === '形容動詞語幹' || t.pos === '形容詞' || t.pos === '動詞' || t.pos === '連体詞')) return t.r;
+    var chars = Array.from(t.s);
+    if (!isKanjiChar(chars[chars.length - 1])) return t.r;
+    for (var k = Math.min(3, t.r.length - 1); k >= 1; k--) {
+      var next = text.substr(t.end, k);
+      if (/^[ぁ-ゖ]+$/.test(next) && t.r.slice(-k) === next) return t.r.slice(0, -k);
+    }
+    return t.r;
+  }
+
   function okToken(t) {
     return !!t.r && isKana(t.r) && t.pos1 !== '固有名詞' && t.pos !== 'UNK';
   }
@@ -125,8 +141,8 @@
    * @param {string} text 本文
    * @param {Array} toks alignTokens の結果
    * @param {{reader:number}} opts 読む人（needsRuby を見る）
-   * @param {{user?:Object, extra?:Object, levels:Object}} dicts user: 端末の辞書 {表記: 読み（'' は振らない）}、extra: 追加辞書 {表記: [読み, 'p'|'a'|'']}
-   * @returns {Array} 単位の配列。{start, end, text, word, segs:[{b, r?}], reading, ruby, mark:''|'one'|'split'|'amb', skip:''|'unknown'|'proper'|'user'|'align', src, level}
+   * @param {{user?:Object, extra?:Object, amb?:Object, levels:Object}} dicts user: 端末の辞書 {表記: 読み（'' は振らない）}、extra: 追加辞書 {表記: [読み, 'p'|'a'|'']}、amb: 読み分けのある語 {表記: [読み, …]}
+   * @returns {Array} 単位の配列。{start, end, text, word, segs:[{b, r?}], reading, ruby, mark:''|'one'|'split'|'amb'|'okuri', alts?:[読み], skip:''|'unknown'|'proper'|'user'|'align', src, level}
    */
   function annotate(text, toks, opts, dicts) {
     var reader = opts && opts.reader != null ? opts.reader : 0;
@@ -150,6 +166,10 @@
       }
       return true;
     }
+    // 読み分けのある語（tools/ambiguous-verified.tsv。どちらの読みも辞書にある語）: 読みは変えず印を付け、ほかの読みを持たせる（直す画面に出す）
+    function ambMark(u, s) {
+      if (dicts.amb && own.call(dicts.amb, s)) { u.mark = 'amb'; u.alts = dicts.amb[s].slice(); }
+    }
     var i = 0;
     while (i < toks.length) {
       var t = toks[i];
@@ -164,8 +184,10 @@
           else word(pos, end, { segs: alignReading(m.s, m.r) || [{ b: m.s, r: kataToHira(m.r) }], reading: kataToHira(m.r), src: 'user', mark: '', skip: '' });
         } else {
           var segs = alignReading(m.s, m.r);
-          word(pos, end, segs ? { segs: segs, reading: m.r, src: m.flag === 'p' ? 'place' : 'extra', mark: m.flag === 'a' ? 'amb' : '', skip: '' }
-            : { skip: 'align', src: 'extra', mark: '' });
+          var eu = segs ? { segs: segs, reading: m.r, src: m.flag === 'p' ? 'place' : 'extra', mark: m.flag === 'a' ? 'amb' : '', skip: '' }
+            : { skip: 'align', src: 'extra', mark: '' };
+          if (segs && m.flag !== 'p') ambMark(eu, m.s);
+          word(pos, end, eu);
         }
         pos = end; i = m.j + 1; continue;
       }
@@ -194,7 +216,9 @@
           !matchAt(text, toks, j + 1, dicts)) j++;
         if (j > i) {
           var rd = toks.slice(i, j + 1).map(function (x) { return x.r; }).join('');
-          word(pos, toks[j].end, { segs: [{ b: text.slice(t.start, toks[j].end), r: rd }], reading: rd, src: 'analyzer', mark: 'split', skip: '' });
+          var su = { segs: [{ b: text.slice(t.start, toks[j].end), r: rd }], reading: rd, src: 'analyzer', mark: 'split', skip: '' };
+          ambMark(su, text.slice(t.start, toks[j].end));
+          word(pos, toks[j].end, su);
           pos = toks[j].end; i = j + 1; continue;
         }
       }
@@ -204,17 +228,31 @@
       if (!t.r || !isKana(t.r) || t.pos === 'UNK') u.skip = 'unknown';
       else if (t.pos1 === '固有名詞') u.skip = 'proper';
       else {
-        u.segs = alignReading(t.s, t.r);
+        var tr = trimOverlap(text, t);
+        u.segs = alignReading(t.s, tr);
         if (!u.segs) u.skip = 'align';
         else {
-          u.reading = t.r;
+          u.reading = tr;
           if (Array.from(t.s).length === 1) u.mark = 'one';   // 1 字だけの漢字の語（額・方・外）
+          else if (tr !== t.r) u.mark = 'okuri';               // 送り仮名の重なりを外した語（身近か）。外し方が推測なので印
+          ambMark(u, t.s);
         }
       }
       word(pos, t.end, u);
       pos = t.end; i++;
     }
     plain(pos, text.length);
+    // 漢字どうしが語の切れ目で接している（無暗に → 無 / 暗に、立停まった）: 1 つの語が割れたかもしれないので、
+    // 両側とも印を付ける（割れた複合語と同じ扱い）。両側とも解析器の語のときだけ（追加辞書・端末の辞書の語は語の切れ目が確かなので、
+    // 一日中|歩いた は数えない）。振らない語（人名など）の隣も数えない
+    for (var q = 0; q + 1 < units.length; q++) {
+      var a = units[q], b = units[q + 1];
+      if (!a.word || !b.word || a.end !== b.start || a.skip || b.skip || a.src !== 'analyzer' || b.src !== 'analyzer') continue;
+      var ac = Array.from(a.text), bc = Array.from(b.text);
+      if (!isKanjiChar(ac[ac.length - 1]) || !isKanjiChar(bc[0])) continue;
+      if (!a.mark) a.mark = 'split';
+      if (!b.mark) b.mark = 'split';
+    }
     return units;
   }
 
