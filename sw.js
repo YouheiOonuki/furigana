@@ -12,7 +12,9 @@
 'use strict';
 
 const CACHE_PREFIX = 'furigana-';
-const CACHE_NAME   = `${CACHE_PREFIX}v3`; // キャッシュする中身の構成を変えたら上げる
+const CACHE_NAME   = `${CACHE_PREFIX}v4`; // キャッシュする中身の構成を変えたら上げる（辞書のキャッシュは別なので、上げても辞書は取り直さない）
+// 辞書（dict/ の wasm、約 13MB）は画面のキャッシュと分ける。辞書の版が変わったときだけ名前を変える。worker.js の DICT_CACHE と同じ名前にする
+const DICT_CACHE   = `${CACHE_PREFIX}dict-lindera-2.0.0`;
 
 /** 初回インストール時に取得しておくファイル */
 const PRECACHE_URLS = [
@@ -52,7 +54,7 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then((keys) => Promise.all(
         keys
-          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)   // 自分のキャッシュだけ掃除する
+          .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME && key !== DICT_CACHE)   // 自分のキャッシュだけ掃除する（今の辞書は残す）
           .map((key) => caches.delete(key)),
       ))
       .then(() => self.clients.claim()),
@@ -100,7 +102,7 @@ async function networkFirst(request, fromNetwork) {
 }
 
 async function cacheFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
+  const cache = await caches.open(DICT_CACHE);
   const hit = await cache.match(request, { ignoreSearch: true });
   if (hit) return hit;
   const response = await fetch(request);
