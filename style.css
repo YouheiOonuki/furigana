@@ -226,8 +226,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
   .print-sheet.size-xl .sheet { font-size: 24pt; line-height: 2.2; }
   .print-sheet .sheet rt { color: #000; }
   .print-sheet .w.m { text-decoration: underline dotted #000; }
-  .print-sheet.vertical .print-body { writing-mode: vertical-rl; height: 252mm; }
-  .print-sheet.vertical .credit { writing-mode: horizontal-tb; }
+  html.print-vertical { writing-mode: vertical-rl; }
+  html.print-vertical .credit { text-align: left; margin: 0 4mm 0 0; }
+  .print-sheet.vertical .tcy { text-combine-upright: all; }
   .credit { text-align: right; font-size: 7.5pt; color: #333; margin-top: 4mm; }
   .fixbar { display: none !important; }
   /* 広告は印刷に出さない（gakushu-print と同じ） */

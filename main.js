@@ -293,10 +293,20 @@
   });
 
   // --- 印刷（A4。広告・画面の部品は CSS で消す）---
+  // 縦書きでは 2 けたまでの数字を縦中横にする（4月10日 の 10 を横に寝かせない）
+  function tateChuYoko(html) {
+    return html.replace(/>([^<]+)</g, function (m, t) {
+      return '>' + t.replace(/(^|[^0-9０-９])([0-9]{1,2})(?![0-9])/g, '$1<span class="tcy">$2</span>') + '<';
+    });
+  }
   function buildPrintSheet() {
     var cls = 'print-sheet size-' + settings.size + (settings.vertical ? ' vertical' : '');
     el.printSheet.className = cls;
-    el.printSheet.innerHTML = '<div class="print-body sheet" lang="ja">' + sheetHtml(settings.printMarks, false) + '</div>' +
+    // 縦書きはページ全体を縦にする（Chromium は根の要素が縦書きのときだけ、横に送るページ分けをする）
+    document.documentElement.classList.toggle('print-vertical', settings.vertical);
+    var body = sheetHtml(settings.printMarks, false);
+    if (settings.vertical) body = tateChuYoko('>' + body + '<').slice(1, -1);
+    el.printSheet.innerHTML = '<div class="print-body sheet" lang="ja">' + body + '</div>' +
       (settings.credit ? '<p class="credit">' + Calc.escHtml(T.credit) + '</p>' : '');
   }
   window.addEventListener('beforeprint', buildPrintSheet);
