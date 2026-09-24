@@ -1,8 +1,8 @@
 {
-  "id": "/__REPO__/",
-  "name": "__TITLE__｜yorozu-craft",
-  "short_name": "__TITLE__",
-  "description": "__DESCRIPTION__",
+  "id": "/furigana/",
+  "name": "ふりがなメーカー｜yorozu-craft",
+  "short_name": "ふりがなメーカー",
+  "description": "貼った文に学年別のふりがな。文は外に送りません。",
   "lang": "ja",
   "start_url": "./",
   "scope": "./",
