@@ -56,6 +56,8 @@ test('Service Worker: キャッシュ名は furigana- で始まり、辞書は�
   const s = read('sw.js');
   assert.match(s, /const CACHE_PREFIX = 'furigana-';/);
   assert.ok(!/PRECACHE_URLS = \[[^\]]*\.wasm/.test(s));
-  assert.match(read('worker.js'), /const CACHE_NAME = 'furigana-v2';/);
-  assert.match(s, /CACHE_NAME\s+= `\$\{CACHE_PREFIX\}v2`/);
+  // 辞書のキャッシュは画面のキャッシュと別。worker.js と sw.js で同じ名前（食い違うと、sw の掃除で辞書が消えて毎回 13MB を取り直す）
+  assert.match(read('worker.js'), /const CACHE_NAME = 'furigana-dict-lindera-2\.0\.0';/);
+  assert.match(s, /const DICT_CACHE\s+= `\$\{CACHE_PREFIX\}dict-lindera-2\.0\.0`;/);
+  assert.match(s, /key !== CACHE_NAME && key !== DICT_CACHE/);
 });
