@@ -66,40 +66,36 @@
 
   <main class="app-main">
 
+    <!-- 画面の骨組み「入力 → 結果」（yorozu-plans の docs/SCREEN.md 1.1）。文と読む人 → 見本（結果）と印刷・コピー → くわしい設定などは details -->
     <section class="card" id="sec-input" aria-label="Text and settings">
       <label for="src" class="big-label">Japanese text</label>
       <textarea id="src" rows="6" placeholder="e.g. 三毛猫が大勢の前で額に汗をかいた。" lang="ja" autocomplete="off" spellcheck="false"></textarea>
       <p class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="warn" aria-live="polite"></span></p>
+      <div class="field">
+        <label for="reader">Show furigana for</label>
+        <select id="reader">
+          <option value="0">All kanji</option>
+          <option value="2">Kanji above Grade 1</option>
+          <option value="3">Kanji above Grade 2</option>
+          <option value="4">Kanji above Grade 3</option>
+          <option value="5">Kanji above Grade 4</option>
+          <option value="6">Kanji above Grade 5</option>
+          <option value="7">Kanji above Grade 6 (elementary)</option>
+          <option value="8">Kanji outside the Jōyō list only</option>
+        </select>
+        <p class="hint" id="reader-hint">Furigana on every kanji word.</p>
+      </div>
+      <div class="status" id="status" aria-live="polite">
+        <p id="status-text">Paste text to start. The dictionary (about 13 MB) downloads once, the first time only.</p>
+        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
+      </div>
+    </section>
 
-      <fieldset class="settings">
-        <legend>Settings</legend>
-        <div class="field">
-          <label for="reader">Show furigana for</label>
-          <select id="reader">
-            <option value="0">All kanji</option>
-            <option value="2">Kanji above Grade 1</option>
-            <option value="3">Kanji above Grade 2</option>
-            <option value="4">Kanji above Grade 3</option>
-            <option value="5">Kanji above Grade 4</option>
-            <option value="6">Kanji above Grade 5</option>
-            <option value="7">Kanji above Grade 6 (elementary)</option>
-            <option value="8">Kanji outside the Jōyō list only</option>
-          </select>
-          <p class="hint" id="reader-hint">Furigana on every kanji word.</p>
-        </div>
-        <div class="field">
-          <label class="inline"><input type="checkbox" id="marks" checked> Underline unsure readings (screen only)</label>
-        </div>
-        <div class="field">
-          <label for="size">Text size</label>
-          <select id="size">
-            <option value="m">Normal</option>
-            <option value="l">Large</option>
-            <option value="xl">Extra large</option>
-          </select>
-        </div>
-      </fieldset>
-
+    <section class="card" id="sec-preview" aria-labelledby="h-preview">
+      <h2 id="h-preview">Preview</h2>
+      <p class="hint">Tap a word to correct its reading.</p>
+      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">Your text with furigana appears here.</p></div>
+      <p class="small">Readings come from a dictionary and can be wrong. Check them before you use the text.</p>
       <div class="actions" id="actions">
         <button type="button" class="btn" data-action="print">Print (A4)</button>
         <span class="copy-group">
@@ -114,21 +110,21 @@
         </span>
         <button type="button" class="btn btn-sub" id="open-reading">Reading view</button>
       </div>
-      <div class="status" id="status" aria-live="polite">
-        <p id="status-text">Paste text to start. The dictionary (about 13 MB) downloads once, the first time only.</p>
-        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
-      </div>
-    </section>
-
-    <section class="card" id="sec-preview" aria-labelledby="h-preview">
-      <h2 id="h-preview">Preview</h2>
-      <p class="hint">Tap a word to correct its reading.</p>
-      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">Your text with furigana appears here.</p></div>
-      <p class="small">Readings come from a dictionary and can be wrong. Check them before you use the text.</p>
     </section>
 
     <details class="card" id="more">
       <summary>Output format and more settings</summary>
+      <div class="field">
+        <label class="inline"><input type="checkbox" id="marks" checked> Underline unsure readings (screen only)</label>
+      </div>
+      <div class="field">
+        <label for="size">Text size</label>
+        <select id="size">
+          <option value="m">Normal</option>
+          <option value="l">Large</option>
+          <option value="xl">Extra large</option>
+        </select>
+      </div>
       <div class="field"><label class="inline"><input type="checkbox" id="vertical"> Print in vertical writing</label></div>
       <div class="field"><label class="inline"><input type="checkbox" id="printmarks"> Print the underlines too</label></div>
       <div class="field"><label class="inline"><input type="checkbox" id="credit" checked> Add a small “Made at yorozu-craft.com/furigana/print/” line</label></div>

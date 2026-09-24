@@ -67,40 +67,36 @@
 
   <main class="app-main">
 
+    <!-- 画面の骨組み「入力 → 結果」（yorozu-plans の docs/SCREEN.md 1.1）。文と読む人 → 見本（結果）と印刷・コピー → くわしい設定などは details -->
     <section class="card" id="sec-input" aria-label="文と設定">
       <label for="src" class="big-label">ふりがなを付ける文</label>
       <textarea id="src" rows="6" placeholder="例：三毛猫が大勢の前で額に汗をかいた。" autocomplete="off" spellcheck="false"></textarea>
       <p class="counter small"><span id="count">0</span> / 10,000 字 <span id="limit-msg" class="warn" aria-live="polite"></span></p>
+      <div class="field">
+        <label for="reader">読む人</label>
+        <select id="reader">
+          <option value="0">すべての漢字（1年生）</option>
+          <option value="2">2年生</option>
+          <option value="3">3年生</option>
+          <option value="4">4年生</option>
+          <option value="5">5年生</option>
+          <option value="6">6年生</option>
+          <option value="7">中学生</option>
+          <option value="8">大人（常用漢字の外だけ）</option>
+        </select>
+        <p class="hint" id="reader-hint">すべての漢字に振ります。</p>
+      </div>
+      <div class="status" id="status" aria-live="polite">
+        <p id="status-text">文を貼ると、辞書（約 13MB、初回だけ）を読み込んで解析します。</p>
+        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
+      </div>
+    </section>
 
-      <fieldset class="settings">
-        <legend>設定</legend>
-        <div class="field">
-          <label for="reader">読む人</label>
-          <select id="reader">
-            <option value="0">すべての漢字（1年生）</option>
-            <option value="2">2年生</option>
-            <option value="3">3年生</option>
-            <option value="4">4年生</option>
-            <option value="5">5年生</option>
-            <option value="6">6年生</option>
-            <option value="7">中学生</option>
-            <option value="8">大人（常用漢字の外だけ）</option>
-          </select>
-          <p class="hint" id="reader-hint">すべての漢字に振ります。</p>
-        </div>
-        <div class="field">
-          <label class="inline"><input type="checkbox" id="marks" checked> 自信のない読みに点線（画面だけ）</label>
-        </div>
-        <div class="field">
-          <label for="size">文字の大きさ</label>
-          <select id="size">
-            <option value="m">ふつう</option>
-            <option value="l">大きい</option>
-            <option value="xl">とても大きい</option>
-          </select>
-        </div>
-      </fieldset>
-
+    <section class="card" id="sec-preview" aria-labelledby="h-preview">
+      <h2 id="h-preview">見本</h2>
+      <p class="hint">語をタップすると読みを直せます。</p>
+      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">ここに、ふりがなを振った文が出ます。</p></div>
+      <p class="small">読みは辞書による自動のものです。まちがいは直してからお使いください。</p>
       <div class="actions" id="actions">
         <button type="button" class="btn" data-action="print">印刷する（A4）</button>
         <span class="copy-group">
@@ -115,21 +111,21 @@
         </span>
         <button type="button" class="btn btn-sub" id="open-reading">大きな字で読む</button>
       </div>
-      <div class="status" id="status" aria-live="polite">
-        <p id="status-text">文を貼ると、辞書（約 13MB、初回だけ）を読み込んで解析します。</p>
-        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
-      </div>
-    </section>
-
-    <section class="card" id="sec-preview" aria-labelledby="h-preview">
-      <h2 id="h-preview">見本</h2>
-      <p class="hint">語をタップすると読みを直せます。</p>
-      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">ここに、ふりがなを振った文が出ます。</p></div>
-      <p class="small">読みは辞書による自動のものです。まちがいは直してからお使いください。</p>
     </section>
 
     <details class="card" id="more">
       <summary>出力の形式・くわしい設定</summary>
+      <div class="field">
+        <label class="inline"><input type="checkbox" id="marks" checked> 自信のない読みに点線（画面だけ）</label>
+      </div>
+      <div class="field">
+        <label for="size">文字の大きさ</label>
+        <select id="size">
+          <option value="m">ふつう</option>
+          <option value="l">大きい</option>
+          <option value="xl">とても大きい</option>
+        </select>
+      </div>
       <div class="field"><label class="inline"><input type="checkbox" id="vertical"> 縦書きで印刷する</label></div>
       <div class="field"><label class="inline"><input type="checkbox" id="printmarks"> 印刷にも点線を出す</label></div>
       <div class="field"><label class="inline"><input type="checkbox" id="credit" checked> 紙の下に「yorozu-craft.com/furigana/print/ で作成」と小さく入れる</label></div>
