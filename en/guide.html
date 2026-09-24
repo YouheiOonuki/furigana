@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How the Furigana Generator Works – Grade Filter, Accuracy, FAQ | yorozu-craft</title>
+  <meta name="description" content="How to add furigana to Japanese text by Japanese school grade (Grade 1–6 kanji, Jōyō kanji), what the dotted underline means, measured accuracy against human-made furigana, and why there is no JLPT filter.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yorozu-craft.com/furigana/en/guide.html">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/furigana/guide.html">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/furigana/en/guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/furigana/guide.html">
+
+  <meta property="og:title" content="How the Furigana Generator works | yorozu-craft">
+  <meta property="og:description" content="Grade filter, unsure-reading marks, measured accuracy and FAQ.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://yorozu-craft.com/furigana/en/guide.html">
+  <meta property="og:site_name" content="yorozu-craft">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:image" content="https://yorozu-craft.com/furigana/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why is there no JLPT filter?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The JLPT has not published official kanji lists since its 2010 revision, so any N5–N1 list is unofficial. We use the official Japanese school grade list and the Jōyō list instead." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my text sent to a server?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. The analysis runs inside your browser. The only download is the dictionary file from this site, and it contains none of your text." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I fix a wrong reading?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Tap the word in the preview and type the reading in hiragana. The correction is saved on your device and used for your next texts." }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト） -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5375267956079717"
+     crossorigin="anonymous"></script>
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>How the Furigana Generator works</h1>
+    <p class="subtitle">What this page covers: the grade filter, the dotted underline, accuracy and your data.</p>
+    <p class="lang-switch"><a href="../guide.html" hreflang="ja" lang="ja">日本語</a></p>
+  </header>
+
+  <main class="app-main">
+
+    <p class="card" style="text-align:center"><a href="./">▶ Open the Furigana Generator</a></p>
+
+    <article class="card content" id="howto">
+      <h2>How to use it</h2>
+      <ol>
+        <li>Paste Japanese text (up to 10,000 characters).</li>
+        <li>Choose which kanji get furigana.</li>
+        <li>Check the underlined words and tap any wrong reading to fix it.</li>
+        <li>Print on A4, or copy as ruby HTML, Aozora style, brackets or hiragana.</li>
+      </ol>
+      <p>The first time, the tool downloads a dictionary of about 13 MB. After that it works offline.</p>
+    </article>
+
+    <article class="card content" id="grades">
+      <h2>Kanji a Japanese child learns by grade</h2>
+      <p>Japanese elementary schools teach 1,026 kanji in a fixed order (the official grade list). “Kanji above Grade 3” means furigana on every word that contains at least one kanji taught in Grade 4 or later. The whole word gets furigana, not just that kanji.</p>
+      <table>
+        <tr><th>Grade</th><th>New kanji</th><th>Total so far</th></tr>
+        <tr><td>1</td><td>80</td><td>80</td></tr>
+        <tr><td>2</td><td>160</td><td>240</td></tr>
+        <tr><td>3</td><td>200</td><td>440</td></tr>
+        <tr><td>4</td><td>202</td><td>642</td></tr>
+        <tr><td>5</td><td>193</td><td>835</td></tr>
+        <tr><td>6</td><td>191</td><td>1,026</td></tr>
+      </table>
+      <p>Jōyō kanji (2,136) are what Japanese adults are expected to read. “Outside the Jōyō list only” adds furigana to rare kanji only.</p>
+      <p>Names and words not in the dictionary get no furigana. City and prefecture names use the official readings.</p>
+    </article>
+
+    <article class="card content" id="accuracy">
+      <h2>Accuracy and the dotted underline</h2>
+      <p>A dotted underline means the tool is not sure: one-kanji words, words the dictionary split apart, and some words with two readings.</p>
+      <p>We compared the tool with human-made furigana in seven children’s stories on Aozora Bunko (1,604 readings, measured on 2026-09-24). Readings without an underline matched 96.5% of the time (834 of 864). Underlined readings matched 81.3% (471 of 579).</p>
+    </article>
+
+    <article class="card content" id="faq">
+      <h2>FAQ</h2>
+      <dl class="faq">
+        <dt>Why is there no JLPT filter?</dt>
+        <dd>The JLPT has not published official kanji lists since its 2010 revision, so any N5–N1 list is unofficial. We use the official Japanese school grade list and the Jōyō list instead.</dd>
+        <dt>Is my text sent to a server?</dt>
+        <dd>No. The analysis runs inside your browser. The only download is the dictionary file from this site, and it contains none of your text.</dd>
+        <dt>How do I fix a wrong reading?</dt>
+        <dd>Tap the word in the preview and type the reading in hiragana. The correction is saved on your device and used for your next texts.</dd>
+      </dl>
+    </article>
+
+    <article class="card content" id="notes">
+      <h2>Notes and your data</h2>
+      <ul>
+        <li>Your text, settings and corrections are saved only in this browser (localStorage, keys <code>furigana_*</code>) and never sent anywhere.</li>
+        <li>Readings come from a dictionary and can be wrong. Check them before you share a printout.</li>
+        <li>Romaji uses Hepburn with long-vowel marks (tōkyō).</li>
+      </ul>
+      <p><a href="https://docs.google.com/forms/d/e/1FAIpQLSd8B90qh5lEIyr25iw1jOjdQjOyaPZ1_z2wMB4kH-EmEeJYWw/viewform?usp=pp_url&amp;entry.585564634=furigana" target="_blank" rel="noopener">Feedback form</a> (Google Forms, in Japanese; you can write in English). We read every message but do not reply.</p>
+      <details>
+        <summary>Data sources and licenses</summary>
+        <ul>
+          <li>Analyzer: lindera-wasm 2.0.0 (<a href="../dict/lindera-2.0.0/LICENSE-lindera-wasm.txt">MIT License</a>). Dictionary: IPADIC (<a href="../dict/lindera-2.0.0/NOTICE-IPADIC.txt">notice</a>).</li>
+          <li>Place-name readings: “Local government codes” by the Ministry of Internal Affairs and Communications, adapted (Public Data License 1.0).</li>
+          <li>Readings of 103 common compounds were checked against the Digital Daijisen dictionary (Shogakukan) on Kotobank.</li>
+          <li>Grade list: Ministry of Education course of study (2017). Jōyō list: Cabinet notice of 2010. Last checked 2026-09-24.</li>
+        </ul>
+      </details>
+      <p>Site-wide <a href="../../en/about.html">about and disclaimer</a> and <a href="../../en/privacy-policy.html">privacy policy</a>.</p>
+    </article>
+
+    <article class="card content" id="changelog">
+      <h2>Changelog</h2>
+      <ul>
+        <li><time datetime="2026-09-24">2026-09-24</time> Published</li>
+      </ul>
+    </article>
+
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="../../">yorozu-craft home</a></li>
+        <li><a href="./">Furigana Generator</a></li>
+        <li><a href="./guide.html" aria-current="page">How it works / FAQ</a></li>
+        <li><a href="../../en/about.html">About</a></li>
+        <li><a href="../../en/privacy-policy.html">Privacy policy</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

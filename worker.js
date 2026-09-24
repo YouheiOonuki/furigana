@@ -51,7 +51,7 @@ async function fetchWithProgress(url, bytes) {
   try {
     if (self.caches) {
       const cache = await caches.open(CACHE_NAME);
-      await cache.put(url, new Response(buf.slice(0), { headers: { 'Content-Type': 'application/wasm' } }));
+      if (!(await cache.match(url))) await cache.put(url, new Response(buf.slice(0), { headers: { 'Content-Type': 'application/wasm' } }));
     }
   } catch (e) { /* 容量不足などは無視（次回また取る） */ }
   return buf;

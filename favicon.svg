@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- 仮のアイコン（和紙風の配色の四角）。ツールに合わせて描き直す -->
-  <rect x="6" y="6" width="52" height="52" rx="10" fill="#faf6ee" stroke="#8b4513" stroke-width="4"/>
-  <rect x="20" y="20" width="24" height="24" rx="4" fill="#3f6b2a"/>
+  <!-- ふりがなメーカー: 紙の上の漢字（四角）と、その上の小さなふりがな（朱の点） -->
+  <rect width="64" height="64" rx="14" fill="#8b4513"/>
+  <rect x="9" y="9" width="46" height="46" rx="5" fill="#faf6ee"/>
+  <circle cx="22" cy="19" r="3" fill="#c0392b"/>
+  <circle cx="32" cy="19" r="3" fill="#c0392b"/>
+  <circle cx="42" cy="19" r="3" fill="#c0392b"/>
+  <path d="M17 29h30M32 26v21M19 37h26M22 47h20" stroke="#3a3025" stroke-width="4" stroke-linecap="round"/>
 </svg>

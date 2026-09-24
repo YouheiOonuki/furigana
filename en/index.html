@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Furigana Generator – Add Furigana to Japanese Text by School Grade, Print or Copy | yorozu-craft</title>
+  <meta name="description" content="Free furigana generator: paste Japanese text and add furigana (ふりがな) above kanji, filtered by Japanese school grade or the Jōyō list. Unsure readings are underlined, tap to correct, then print on A4 or copy as ruby HTML. Runs in your browser; your text is never sent.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yorozu-craft.com/furigana/en/">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/furigana/">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/furigana/en/">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/furigana/">
+
+  <meta property="og:title" content="Furigana Generator by school grade | yorozu-craft">
+  <meta property="og:description" content="Add furigana to Japanese text by school grade. Unsure readings are marked, tap to fix, print on A4. Your text never leaves the browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yorozu-craft.com/furigana/en/">
+  <meta property="og:site_name" content="yorozu-craft">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:image" content="https://yorozu-craft.com/furigana/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Furigana Generator",
+    "description": "Adds furigana to pasted Japanese text, filtered by Japanese school grade or the Jōyō list, with print and copy. Runs in the browser; text is not sent.",
+    "url": "https://yorozu-craft.com/furigana/en/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "inLanguage": "en"
+  }
+  </script>
+
+  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト） -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5375267956079717"
+     crossorigin="anonymous"></script>
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body class="tool-page">
+
+  <!-- 固定バー（SCREEN D59: 上端）。見本ができて、印刷ボタンが画面の外にあるときだけ出す -->
+  <div class="fixbar" id="fixbar" hidden>
+    <div class="fixbar-in">
+      <button type="button" class="btn btn-small" data-action="print">Print</button>
+      <a href="#sec-preview">Preview</a>
+    </div>
+  </div>
+
+  <header class="app-header">
+    <h1>Furigana <span lang="ja">(ふりがな)</span> Generator</h1>
+    <p class="subtitle">Add furigana to Japanese text, by Japanese school grade. Your text never leaves this browser.</p>
+    <p class="lang-switch"><a href="../" hreflang="ja" lang="ja">日本語</a></p>
+  </header>
+
+  <main class="app-main">
+
+    <section class="card" id="sec-input" aria-label="Text and settings">
+      <label for="src" class="big-label">Japanese text</label>
+      <textarea id="src" rows="6" placeholder="e.g. 三毛猫が大勢の前で額に汗をかいた。" lang="ja" autocomplete="off" spellcheck="false"></textarea>
+      <p class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="warn" aria-live="polite"></span></p>
+
+      <fieldset class="settings">
+        <legend>Settings</legend>
+        <div class="field">
+          <label for="reader">Show furigana for</label>
+          <select id="reader">
+            <option value="0">All kanji</option>
+            <option value="2">Kanji above Grade 1</option>
+            <option value="3">Kanji above Grade 2</option>
+            <option value="4">Kanji above Grade 3</option>
+            <option value="5">Kanji above Grade 4</option>
+            <option value="6">Kanji above Grade 5</option>
+            <option value="7">Kanji above Grade 6 (elementary)</option>
+            <option value="8">Kanji outside the Jōyō list only</option>
+          </select>
+          <p class="hint" id="reader-hint">Furigana on every kanji word.</p>
+        </div>
+        <div class="field">
+          <label class="inline"><input type="checkbox" id="marks" checked> Underline unsure readings (screen only)</label>
+        </div>
+        <div class="field">
+          <label for="size">Text size</label>
+          <select id="size">
+            <option value="m">Normal</option>
+            <option value="l">Large</option>
+            <option value="xl">Extra large</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <div class="actions" id="actions">
+        <button type="button" class="btn" data-action="print">Print (A4)</button>
+        <span class="copy-group">
+          <label for="format" class="sr-only">Copy format</label>
+          <select id="format">
+            <option value="html">Ruby (paste into documents)</option>
+            <option value="aozora">Aozora style ｜漢字《かんじ》</option>
+            <option value="brackets">Brackets 漢字（かんじ）</option>
+            <option value="hiragana">Hiragana only</option>
+          </select>
+          <button type="button" class="btn btn-sub" id="copy">Copy</button>
+        </span>
+        <button type="button" class="btn btn-sub" id="open-reading">Reading view</button>
+      </div>
+      <div class="status" id="status" aria-live="polite">
+        <p id="status-text">Paste text to start. The dictionary (about 13 MB) downloads once, the first time only.</p>
+        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
+      </div>
+    </section>
+
+    <section class="card" id="sec-preview" aria-labelledby="h-preview">
+      <h2 id="h-preview">Preview</h2>
+      <p class="hint">Tap a word to correct its reading.</p>
+      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">Your text with furigana appears here.</p></div>
+      <p class="small">Readings come from a dictionary and can be wrong. Check them before you use the text.</p>
+    </section>
+
+    <details class="card" id="more">
+      <summary>Output format and more settings</summary>
+      <div class="field"><label class="inline"><input type="checkbox" id="vertical"> Print in vertical writing</label></div>
+      <div class="field"><label class="inline"><input type="checkbox" id="printmarks"> Print the underlines too</label></div>
+      <div class="field"><label class="inline"><input type="checkbox" id="credit" checked> Add a small “Made at yorozu-craft.com/furigana/print/” line</label></div>
+      <div class="field">
+        <span class="label">Furigana in</span>
+        <label class="inline"><input type="radio" name="script" value="hiragana" checked> Hiragana</label>
+        <label class="inline"><input type="radio" name="script" value="romaji"> Romaji (Hepburn)</label>
+      </div>
+      <div class="field">
+        <label for="out">Text to copy (format chosen above)</label>
+        <textarea id="out" rows="5" readonly></textarea>
+      </div>
+    </details>
+
+    <details class="card" id="dict-box">
+      <summary>Corrected readings (<span id="dict-count">0</span>)</summary>
+      <p class="small">Corrections are saved on this device and used for your next texts too.</p>
+      <ul class="dict-list" id="dict-list"></ul>
+    </details>
+
+    <details class="card" id="backup-box">
+      <summary>Save, back up, bookmarklet</summary>
+      <p class="small">Your text and corrections are saved only in this browser (localStorage, keys <code>furigana_*</code>) and never sent anywhere. Use these buttons to back up, restore or clear.</p>
+      <p class="btn-row">
+        <button type="button" class="btn btn-sub" id="backup-export">Save to file</button>
+        <button type="button" class="btn btn-sub" id="backup-import">Load from file</button>
+        <button type="button" class="btn btn-sub" id="clear-all">Clear text</button>
+      </p>
+      <input type="file" id="backup-file" accept=".json,application/json" hidden>
+      <p id="backup-msg" class="small" aria-live="polite"></p>
+      <h3 class="h3">Bookmarklet (computer)</h3>
+      <p class="small">Drag the link to your bookmarks bar. On any page, click it to open the selected text (or the page text) here.</p>
+      <p><a id="bookmarklet" class="bookmarklet" href="#">Add furigana</a></p>
+    </details>
+
+    <p class="small"><a href="./guide.html">How it works, accuracy and FAQ</a></p>
+
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <ul>
+        <li><a href="../../">yorozu-craft home</a></li>
+        <li><a href="./" aria-current="page">Furigana Generator</a></li>
+        <li><a href="./guide.html">How it works / FAQ</a></li>
+        <li><a href="../../en/about.html">About</a></li>
+        <li><a href="../../en/privacy-policy.html">Privacy policy</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <!-- 印刷用（画面には出さない） -->
+  <div id="print-sheet" class="print-sheet" aria-hidden="true"></div>
+
+  <dialog id="fix-dialog" class="fix-dialog" aria-labelledby="fix-title">
+    <form method="dialog" id="fix-form">
+      <p class="fix-word" id="fix-title" lang="ja"></p>
+      <p class="small" id="fix-note"></p>
+      <label for="fix-reading">Reading (hiragana)</label>
+      <input type="text" id="fix-reading" autocomplete="off" lang="ja">
+      <p class="small warn" id="fix-error" aria-live="polite"></p>
+      <p class="small">Saved on this device and used for your next texts too.</p>
+      <div class="btn-row">
+        <button type="submit" class="btn" value="save">Use this reading</button>
+        <button type="submit" class="btn btn-sub" value="skip">No furigana</button>
+        <button type="submit" class="btn btn-sub" value="reset" id="fix-reset">Undo correction</button>
+        <button type="submit" class="btn btn-sub" value="cancel" formnovalidate>Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="reading-view" class="reading-view" aria-label="Reading view">
+    <div class="rv-bar">
+      <button type="button" class="btn btn-sub" id="rv-smaller" aria-label="Smaller text">A−</button>
+      <button type="button" class="btn btn-sub" id="rv-larger" aria-label="Larger text">A＋</button>
+      <button type="button" class="btn" id="rv-close">Close</button>
+    </div>
+    <div id="rv-body" class="rv-body sheet" lang="ja"></div>
+  </dialog>
+
+  <script src="../constants.js"></script>
+  <script src="../calc.js"></script>
+  <script src="../main.js"></script>
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
