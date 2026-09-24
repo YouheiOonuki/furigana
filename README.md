@@ -19,7 +19,7 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 - ふりがなの字: ひらがな／ローマ字（ヘボン式、長音記号。D74）
 - ブックマークレット（PC、D73）: 選んだ文（なければ本文）を `#t=` で新しいタブに渡す。長い文は開いた先からの合図のあと `postMessage`。相手のページには書き込まない
 - 保存: 本文・設定・直した読み（`furigana_text`・`furigana_settings`・`furigana_dict`）。ファイルに書き出し・読み込み（D31）
-- オフライン: Service Worker（キャッシュ `furigana-v2`）。辞書は解析するときに初めて取る
+- オフライン: Service Worker（キャッシュ `furigana-v3`）。辞書は解析するときに初めて取る
 
 ## 解析器と辞書（D67・D68）
 
