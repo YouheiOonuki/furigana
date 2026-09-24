@@ -60,3 +60,6 @@ id_rsa.*
 
 # 秘密の所在を書いた走査結果。本文より公開してはいけない。
 findings/
+
+# Python
+__pycache__/

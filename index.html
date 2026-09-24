@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ふりがなメーカー｜yorozu-craft</title>
-  <meta name="description" content="貼った文に学年別のふりがな。文は外に送りません。">
+  <title>ふりがなメーカー（学年別にルビを振る・印刷）｜yorozu-craft</title>
+  <meta name="description" content="貼った文に、学年に合わせてふりがな（ルビ）を自動で振ります。自信のない読みには印、タップで直せて、A4 で印刷・Word 用にコピー。文はこの端末の中で解析し、外に送りません。登録不要・無料。">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://yorozu-craft.com/furigana/">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/furigana/">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/furigana/en/">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/furigana/">
 
-  <meta property="og:title" content="ふりがなメーカー｜yorozu-craft">
-  <meta property="og:description" content="貼った文に学年別のふりがな。文は外に送りません。">
+  <meta property="og:title" content="ふりがなメーカー（学年別にルビを振る・印刷）｜yorozu-craft">
+  <meta property="og:description" content="貼った文に学年別のふりがな。自信のない読みに印、タップで直して A4 印刷。文は外に送りません。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yorozu-craft.com/furigana/">
   <meta property="og:site_name" content="yorozu-craft">
   <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
   <meta property="og:image" content="https://yorozu-craft.com/furigana/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -26,16 +30,16 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "ふりがなメーカー",
-    "description": "貼った文に学年別のふりがな。文は外に送りません。",
+    "description": "貼った文に学年別のふりがな（ルビ）を振り、A4 で印刷・コピーできる道具。文は端末の中で解析し、外に送らない。",
     "url": "https://yorozu-craft.com/furigana/",
-    "applicationCategory": "UtilitiesApplication",
+    "applicationCategory": "EducationalApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
     "inLanguage": "ja"
   }
   </script>
 
-  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト）。全画面で操作する画面なら script を消して meta だけ残す -->
+  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト） -->
   <meta name="google-adsense-account" content="ca-pub-5375267956079717">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5375267956079717"
      crossorigin="anonymous"></script>
@@ -45,33 +49,123 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body class="tool-page">
+
+  <!-- 固定バー（SCREEN D59: 上端）。見本ができて、印刷ボタンが画面の外にあるときだけ出す -->
+  <div class="fixbar" id="fixbar" hidden>
+    <div class="fixbar-in">
+      <button type="button" class="btn btn-small" data-action="print">印刷する</button>
+      <a href="#sec-preview">見本へ</a>
+    </div>
+  </div>
 
   <header class="app-header">
     <h1>ふりがなメーカー</h1>
-    <p class="subtitle">貼った文に学年別のふりがな。文は外に送りません。</p>
+    <p class="subtitle">貼った文に学年別のふりがなを振ります。文は外に送りません。</p>
+    <p class="lang-switch"><a href="./en/" hreflang="en" lang="en">English</a></p>
   </header>
 
   <main class="app-main">
 
-    <!-- ここにツール本体を書く（例: 金額を 100 円単位で切り上げる） -->
-    <section class="card" aria-labelledby="tool-heading">
-      <h2 id="tool-heading">計算</h2>
-      <div class="field">
-        <label for="amount">金額</label>
-        <p class="hint">入力内容はこの端末のブラウザにだけ保存され、外部には送信されません。</p>
-        <input type="number" id="amount" inputmode="numeric" placeholder="例：1234">
+    <section class="card" id="sec-input" aria-label="文と設定">
+      <label for="src" class="big-label">ふりがなを付ける文</label>
+      <textarea id="src" rows="6" placeholder="例：三毛猫が大勢の前で額に汗をかいた。" autocomplete="off" spellcheck="false"></textarea>
+      <p class="counter small"><span id="count">0</span> / 10,000 字 <span id="limit-msg" class="warn" aria-live="polite"></span></p>
+
+      <fieldset class="settings">
+        <legend>設定</legend>
+        <div class="field">
+          <label for="reader">読む人</label>
+          <select id="reader">
+            <option value="0">すべての漢字（1年生）</option>
+            <option value="2">2年生</option>
+            <option value="3">3年生</option>
+            <option value="4">4年生</option>
+            <option value="5">5年生</option>
+            <option value="6">6年生</option>
+            <option value="7">中学生</option>
+            <option value="8">大人（常用漢字の外だけ）</option>
+          </select>
+          <p class="hint" id="reader-hint">すべての漢字に振ります。</p>
+        </div>
+        <div class="field">
+          <label class="inline"><input type="checkbox" id="marks" checked> 自信のない読みに点線（画面だけ）</label>
+        </div>
+        <div class="field">
+          <label for="size">文字の大きさ</label>
+          <select id="size">
+            <option value="m">ふつう</option>
+            <option value="l">大きい</option>
+            <option value="xl">とても大きい</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <div class="actions" id="actions">
+        <button type="button" class="btn" data-action="print">印刷する（A4）</button>
+        <span class="copy-group">
+          <label for="format" class="sr-only">コピーの形式</label>
+          <select id="format">
+            <option value="html">ルビ（Word・Google ドキュメント用）</option>
+            <option value="aozora">青空文庫形式 ｜漢字《かんじ》</option>
+            <option value="brackets">括弧 漢字（かんじ）</option>
+            <option value="hiragana">ひらがなだけ</option>
+          </select>
+          <button type="button" class="btn btn-sub" id="copy">コピー</button>
+        </span>
+        <button type="button" class="btn btn-sub" id="open-reading">大きな字で読む</button>
       </div>
-      <p>結果：<strong id="result" aria-live="polite">—</strong></p>
-      <button type="button" id="share" class="btn">結果を開くリンクをコピー</button>
-      <!-- 保存内容のファイルへの書き出し・読み込み（README「ツールを追加するとき」20。保存する・共有するボタンの近くに置く） -->
-      <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
-      <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
-      <input type="file" id="backup-file" accept=".json,application/json" hidden>
-      <p id="backup-msg" class="small" aria-live="polite"></p>
+      <div class="status" id="status" aria-live="polite">
+        <p id="status-text">文を貼ると、辞書（約 13MB、初回だけ）を読み込んで解析します。</p>
+        <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
+      </div>
     </section>
 
-    <p class="small"><a href="./guide.html">使い方・よくある質問・ご利用上の注意</a></p>
+    <section class="card" id="sec-preview" aria-labelledby="h-preview">
+      <h2 id="h-preview">見本</h2>
+      <p class="hint">語をタップすると読みを直せます。</p>
+      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">ここに、ふりがなを振った文が出ます。</p></div>
+      <p class="small">読みは辞書による自動のものです。まちがいは直してからお使いください。</p>
+    </section>
+
+    <details class="card" id="more">
+      <summary>出力の形式・くわしい設定</summary>
+      <div class="field"><label class="inline"><input type="checkbox" id="vertical"> 縦書きで印刷する</label></div>
+      <div class="field"><label class="inline"><input type="checkbox" id="printmarks"> 印刷にも点線を出す</label></div>
+      <div class="field"><label class="inline"><input type="checkbox" id="credit" checked> 紙の下に「yorozu-craft.com/furigana/print/ で作成」と小さく入れる</label></div>
+      <div class="field">
+        <span class="label">ふりがなの字</span>
+        <label class="inline"><input type="radio" name="script" value="hiragana" checked> ひらがな</label>
+        <label class="inline"><input type="radio" name="script" value="romaji"> ローマ字</label>
+      </div>
+      <div class="field">
+        <label for="out">コピーする文（上で選んだ形式）</label>
+        <textarea id="out" rows="5" readonly></textarea>
+      </div>
+    </details>
+
+    <details class="card" id="dict-box">
+      <summary>直した読み（<span id="dict-count">0</span> 語）</summary>
+      <p class="small">直した読みはこの端末に保存され、次の文にも使われます。</p>
+      <ul class="dict-list" id="dict-list"></ul>
+    </details>
+
+    <details class="card" id="backup-box">
+      <summary>保存・書き出し・ブックマークレット</summary>
+      <p class="small">入力内容はこの端末のブラウザ（localStorage、キー <code>furigana_*</code>）にだけ保存され、外部には送信されません。書き出し・読み込み・消去はこの画面のボタンから。</p>
+      <p class="btn-row">
+        <button type="button" class="btn btn-sub" id="backup-export">ファイルに書き出す</button>
+        <button type="button" class="btn btn-sub" id="backup-import">ファイルから読み込む</button>
+        <button type="button" class="btn btn-sub" id="clear-all">本文を消す</button>
+      </p>
+      <input type="file" id="backup-file" accept=".json,application/json" hidden>
+      <p id="backup-msg" class="small" aria-live="polite"></p>
+      <h3 class="h3">ブックマークレット（パソコン）</h3>
+      <p class="small">下のリンクをブックマークバーへドラッグ。読みたいページで押すと、選んだ文（なければ本文）をここで開きます。</p>
+      <p><a id="bookmarklet" class="bookmarklet" href="#">ふりがなを振る</a></p>
+    </details>
+
+    <p class="small"><a href="./guide.html">使い方・精度・よくある質問・ご利用上の注意</a></p>
 
   </main>
 
@@ -87,6 +181,35 @@
     </nav>
     <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
   </footer>
+
+  <!-- 印刷用（画面には出さない） -->
+  <div id="print-sheet" class="print-sheet" aria-hidden="true"></div>
+
+  <dialog id="fix-dialog" class="fix-dialog" aria-labelledby="fix-title">
+    <form method="dialog" id="fix-form">
+      <p class="fix-word" id="fix-title"></p>
+      <p class="small" id="fix-note"></p>
+      <label for="fix-reading">読み（ひらがな）</label>
+      <input type="text" id="fix-reading" autocomplete="off" lang="ja">
+      <p class="small warn" id="fix-error" aria-live="polite"></p>
+      <p class="small">この端末の辞書に入り、次の文にも使われます。</p>
+      <div class="btn-row">
+        <button type="submit" class="btn" value="save">この読みにする</button>
+        <button type="submit" class="btn btn-sub" value="skip">振らない</button>
+        <button type="submit" class="btn btn-sub" value="reset" id="fix-reset">元に戻す</button>
+        <button type="submit" class="btn btn-sub" value="cancel" formnovalidate>やめる</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="reading-view" class="reading-view" aria-label="大きな字で読む">
+    <div class="rv-bar">
+      <button type="button" class="btn btn-sub" id="rv-smaller" aria-label="字を小さく">A−</button>
+      <button type="button" class="btn btn-sub" id="rv-larger" aria-label="字を大きく">A＋</button>
+      <button type="button" class="btn" id="rv-close">閉じる</button>
+    </div>
+    <div id="rv-body" class="rv-body sheet" lang="ja"></div>
+  </dialog>
 
   <script src="./constants.js"></script>
   <script src="./calc.js"></script>
