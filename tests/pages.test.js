@@ -46,7 +46,7 @@ test('印刷の着地ページ: noindex、sitemap に載せない。クレジッ
 });
 
 test('使い方ページの精度の数字が日英でそろっている', () => {
-  for (const n of ['96.5%', '834', '864', '81.3%', '471', '579']) {
+  for (const n of ['96.9%', '826', '852', '81.9%', '484', '591', '41%']) {
     assert.ok(read('guide.html').includes(n), 'ja ' + n);
     assert.ok(read('en/guide.html').includes(n), 'en ' + n);
   }
@@ -56,6 +56,6 @@ test('Service Worker: キャッシュ名は furigana- で始まり、辞書は�
   const s = read('sw.js');
   assert.match(s, /const CACHE_PREFIX = 'furigana-';/);
   assert.ok(!/PRECACHE_URLS = \[[^\]]*\.wasm/.test(s));
-  assert.match(read('worker.js'), /const CACHE_NAME = 'furigana-v1';/);
-  assert.match(s, /CACHE_NAME\s+= `\$\{CACHE_PREFIX\}v1`/);
+  assert.match(read('worker.js'), /const CACHE_NAME = 'furigana-v2';/);
+  assert.match(s, /CACHE_NAME\s+= `\$\{CACHE_PREFIX\}v2`/);
 });

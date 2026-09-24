@@ -54,6 +54,7 @@ function analyse(text, opts = {}) {
     levels,
     user: opts.user || {},
     extra: opts.noExtra ? {} : (opts.extra || extra),
+    amb: opts.noAmb ? {} : CONSTANTS.ambiguousReadings.value,
   });
 }
 // 語の単位を引く（表層形で）
