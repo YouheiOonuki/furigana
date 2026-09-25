@@ -12,7 +12,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'furigana-';
-const CACHE_NAME   = `${CACHE_PREFIX}v4`; // キャッシュする中身の構成を変えたら上げる（辞書のキャッシュは別なので、上げても辞書は取り直さない）
+const CACHE_NAME   = `${CACHE_PREFIX}v5`; // キャッシュする中身の構成を変えたら上げる（辞書のキャッシュは別なので、上げても辞書は取り直さない）
 // 辞書（dict/ の wasm、約 13MB）は画面のキャッシュと分ける。辞書の版が変わったときだけ名前を変える。worker.js の DICT_CACHE と同じ名前にする
 const DICT_CACHE   = `${CACHE_PREFIX}dict-lindera-2.0.0`;
 
@@ -27,6 +27,7 @@ const PRECACHE_URLS = [
   './constants.js',
   './calc.js',
   './main.js',
+  './reset-storage.js',
   './worker.js',
   './dict/lindera-2.0.0/lindera_wasm.js',
   './data/extra-dict.json',
