@@ -61,3 +61,21 @@ test('Service Worker: キャッシュ名は furigana- で始まり、辞書は�
   assert.match(s, /const DICT_CACHE\s+= `\$\{CACHE_PREFIX\}dict-lindera-2\.0\.0`;/);
   assert.match(s, /key !== CACHE_NAME && key !== DICT_CACHE/);
 });
+
+test('この道具について（WRITING 1 章）: 画面の末尾に 400〜800 字、使い方ページへのリンク、数字は使い方ページと同じ', () => {
+  const s = read('index.html');
+  const m = s.match(/<details class="about-tool[^"]*" id="about-tool">\s*<summary>この道具について（使い方・計算のしくみ・注意）<\/summary>([\s\S]*?)<\/details>/);
+  assert.ok(m, 'about-tool がある');
+  const chars = m[1].replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, 'x').replace(/\s+/g, '').length;
+  assert.ok(chars >= 400 && chars <= 800, '字数 ' + chars);
+  assert.ok((m[1].match(/<h3>/g) || []).length <= 4);
+  assert.ok(m[1].includes('href="./guide.html"'));
+  // 結果と保存の後（保存の details より後ろ）
+  assert.ok(s.indexOf('id="about-tool"') > s.indexOf('id="backup-box"'));
+  for (const n of ['96.9%', '81.9%', '10,000 字', '約 13MB', 'furigana_text', 'furigana_settings', 'furigana_dict']) {
+    assert.ok(m[1].includes(n), n);
+  }
+  for (const n of ['96.9%', '81.9%', '10,000 字', '約 13MB']) assert.ok(read('guide.html').includes(n), 'guide ' + n);
+  // 英語ページには入れない（英語の文はオーナーの承認が要る）
+  assert.ok(!read('en/index.html').includes('about-tool'));
+});
