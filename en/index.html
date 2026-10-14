@@ -69,7 +69,7 @@
     <section class="card" id="sec-input" aria-label="Text and settings">
       <label for="src" class="big-label">Japanese text</label>
       <textarea id="src" rows="6" placeholder="e.g. 三毛猫が大勢の前で額に汗をかいた。" lang="ja" autocomplete="off" spellcheck="false"></textarea>
-      <p class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="warn" aria-live="polite"></span></p>
+      <output class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="warn" aria-live="polite"></span></output>
       <div class="field">
         <label for="reader">Show furigana for</label>
         <select id="reader">
@@ -82,19 +82,17 @@
           <option value="7">Kanji above Grade 6 (elementary)</option>
           <option value="8">Kanji outside the Jōyō list only</option>
         </select>
-        <p class="hint" id="reader-hint">Furigana on every kanji word.</p>
+        <output class="hint" id="reader-hint">Furigana on every kanji word.</output>
       </div>
       <div class="status" id="status" aria-live="polite">
-        <p id="status-text">Paste text to start. The dictionary (about 13 MB) downloads once, the first time only.</p>
+        <output id="status-text">Paste text to start. The dictionary (about 13 MB) downloads once, the first time only.</output>
         <div class="bar" id="bar" hidden><div class="bar-in" id="bar-in"></div></div>
       </div>
     </section>
 
     <section class="card" id="sec-preview" aria-labelledby="h-preview">
       <h2 id="h-preview">Preview</h2>
-      <p class="hint">Tap a word to correct its reading.</p>
-      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty">Your text with furigana appears here.</p></div>
-      <p class="small">Readings come from a dictionary and can be wrong. Check them before you use the text.</p>
+      <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty"></p></div>
       <div class="actions" id="actions">
         <button type="button" class="btn" data-action="print">Print (A4)</button>
         <span class="copy-group">

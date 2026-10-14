@@ -232,6 +232,7 @@ a { color: var(--accent); }
   border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--text); resize: vertical;
 }
 #src { min-height: 8.5rem; }
+output.counter, output#status-text, output#reader-hint { display: block; }
 .counter { margin: 0.2rem 0 0.6rem; }
 .warn { color: #b3261e; }
 @media (prefers-color-scheme: dark) { .warn { color: #ffb4a9; } }
