@@ -21,7 +21,7 @@
       noWorker: 'このブラウザでは解析できません（Web Worker のモジュールに未対応）。新しいブラウザでお試しください。',
       summary: function (s) { return '振った語 ' + s.ruby + '（うち点線 ' + s.marked + '）・振らなかった語（人名・知らない語など）' + s.skipped + '。'; },
       overLimit: function (n) { return '10,000 字を超えた分（' + n.toLocaleString('ja-JP') + ' 字）は使いません。'; },
-      empty: 'ここに、ふりがなを振った文が出ます。',
+      empty: '',
       readerHint: {
         0: 'すべての漢字に振ります。',
         2: '1年生で習う字だけの語には振りません。', 3: '2年生までに習う字だけの語には振りません。',
@@ -66,7 +66,7 @@
       noWorker: 'This browser cannot run the analyzer (module workers are not supported). Please try a newer browser.',
       summary: function (s) { return s.ruby + ' words with furigana (' + s.marked + ' underlined as unsure); ' + s.skipped + ' left without (names, unknown words).'; },
       overLimit: function (n) { return 'Text beyond 10,000 characters (' + n.toLocaleString('en-US') + ' more) is ignored.'; },
-      empty: 'Your text with furigana appears here.',
+      empty: '',
       readerHint: {
         0: 'Furigana on every kanji word.',
         2: 'No furigana on words made only of Grade 1 kanji.', 3: 'No furigana on words made only of Grade 1–2 kanji.',
