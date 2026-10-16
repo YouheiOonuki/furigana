@@ -480,6 +480,13 @@
     if (!m) return null;
     try { return clampInput(decodeURIComponent(m[1])).text; } catch (e) { return null; }
   }
+  // リンク（#t=）や開いたページ（#pm）から来た文を受けるか。返りは入れる文か null（入れない）。
+  // 保存中の下書きが空でなく、来た文と違うときだけ ask()（confirm）で聞く。ブックマークレットのいつもの使い方では聞かない（D73、K191 段 2 の F2）
+  function acceptIncoming(current, incoming, ask) {
+    if (typeof incoming !== 'string') return null;
+    if (current && current !== incoming && !ask()) return null;
+    return incoming;
+  }
 
   // --- バックアップファイル（README「ツールを追加するとき」20。決定 D31） ---
   // 形式: { tool, version, exportedAt, data }。data はブラウザに保存しているものと同じ形
@@ -526,7 +533,7 @@
     toRomaji: toRomaji, toPieces: toPieces, toHtml: toHtml, toAozora: toAozora, toBrackets: toBrackets, toHiraganaOnly: toHiraganaOnly,
     parseAozora: parseAozora, parseBrackets: parseBrackets, parseHtmlRuby: parseHtmlRuby, escHtml: escHtml,
     normalizeUserDict: normalizeUserDict, cleanReading: cleanReading, normalizeSettings: normalizeSettings,
-    MAX_CHARS: MAX_CHARS, clampInput: clampInput, HASH_LIMIT: HASH_LIMIT, makeBookmarklet: makeBookmarklet, readHashText: readHashText,
+    MAX_CHARS: MAX_CHARS, clampInput: clampInput, HASH_LIMIT: HASH_LIMIT, makeBookmarklet: makeBookmarklet, readHashText: readHashText, acceptIncoming: acceptIncoming,
     backupFileName: backupFileName, buildBackup: buildBackup, parseBackup: parseBackup,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
