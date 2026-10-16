@@ -98,3 +98,23 @@ test('#t= の読み取り: 壊れた値は null、上限で切る', () => {
   assert.equal(Calc.readHashText('#s=abc'), null);
   assert.equal(Calc.readHashText('#t=' + encodeURIComponent('あ'.repeat(10010))).length, 10000);
 });
+
+// K191 段 2 の F2（ROADMAP 7.88）: リンク（#t=）・開いたページ（#pm）から来た文で、保存中の下書きを黙って置き換えない
+test('来た文: 下書きが無ければ聞かずに入れる（ブックマークレットのいつもの使い方）', () => {
+  let asked = 0;
+  assert.equal(Calc.acceptIncoming('', '吾輩は猫である', () => { asked++; return false; }), '吾輩は猫である');
+  assert.equal(Calc.acceptIncoming('同じ文', '同じ文', () => { asked++; return false; }), '同じ文', '同じ文なら聞かない');
+  assert.equal(asked, 0);
+});
+test('来た文: 下書きがあり別の文なら 1 回聞き、OK なら入れる', () => {
+  let asked = 0;
+  assert.equal(Calc.acceptIncoming('書きかけの下書き', '別の文', () => { asked++; return true; }), '別の文');
+  assert.equal(asked, 1);
+});
+test('来た文: キャンセルなら入れない（下書きが残る）。main.js は判断をこの関数に任せる', () => {
+  assert.equal(Calc.acceptIncoming('書きかけの下書き', '別の文', () => false), null);
+  const main = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'main.js'), 'utf8');
+  assert.match(main, /Calc\.acceptIncoming\(el\.src\.value, t,/);
+  assert.equal((main.match(/putIncoming\(/g) || []).length, 3, '定義・#t=・#pm の 3 か所');
+  assert.doesNotMatch(main, /el\.src\.value = t;|el\.src\.value = Calc\.clampInput\(ev\.data\.text\)/, '来た文を直接入れる道が残っていない');
+});

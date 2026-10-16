@@ -53,6 +53,7 @@
       imported: 'ファイルから読み込みました。',
       unreadable: 'ファイルを読み取れませんでした。',
       confirmClear: '本文を消します。直した読みは残ります。よろしいですか？',
+      confirmIncoming: '保存している本文を、届いた文に置き換えます。よろしいですか？',
       pmWait: '開いたページから文を受け取っています…',
       pmFail: '文を受け取れませんでした。元のページで文をコピーして、ここに貼ってください。',
       backupMsg: null,
@@ -98,6 +99,7 @@
       imported: 'Loaded from the file.',
       unreadable: 'Could not read the file.',
       confirmClear: 'Clear the text? Your corrected readings stay.',
+      confirmIncoming: 'Replace your saved text with the text that came in?',
       pmWait: 'Receiving text from the page you came from…',
       pmFail: 'No text arrived. Copy the text on the original page and paste it here.',
       backupMsg: {
@@ -454,12 +456,16 @@
   // --- ブックマークレット（決定 D73）と、そこから来た文 ---
   $('bookmarklet').href = Calc.makeBookmarklet(location.origin + location.pathname);
   $('bookmarklet').addEventListener('click', function (ev) { if (!/^javascript:/.test(this.getAttribute('href'))) ev.preventDefault(); });
+  function putIncoming(t) {
+    var next = Calc.acceptIncoming(el.src.value, t, function () { return window.confirm(T.confirmIncoming); });
+    if (next != null) { el.src.value = next; onInput(); }
+  }
   function takeIncoming() {
     var h = location.hash;
     var t = Calc.readHashText(h);
     if (t != null) {
       history.replaceState(null, '', location.pathname + location.search);   // 本文を履歴・URL に残さない
-      el.src.value = t; onInput(); return;
+      putIncoming(t); return;
     }
     if (h === '#pm' && window.opener) {
       history.replaceState(null, '', location.pathname + location.search);
@@ -469,7 +475,7 @@
         if (ev.source !== window.opener || !ev.data || ev.data.type !== 'furigana-text' || typeof ev.data.text !== 'string') return;
         got = true;
         window.removeEventListener('message', onMsg);
-        el.src.value = Calc.clampInput(ev.data.text).text; onInput();
+        putIncoming(Calc.clampInput(ev.data.text).text);
       });
       // 「準備できた」とだけ伝える（中身は何も渡さない）
       try { window.opener.postMessage({ type: 'furigana-ready' }, '*'); } catch (e) { /* 開いた側が閉じていれば何もしない */ }
