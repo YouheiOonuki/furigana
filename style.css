@@ -88,14 +88,13 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .field { margin-bottom: var(--sp-4); }
 .field label { display: block; font-weight: 700; margin-bottom: var(--sp-1); }
 .field .hint { font-size: var(--fs-s); color: var(--muted); margin-bottom: var(--sp-2); }
-.field input[type="number"], .field input[type="text"], .field select { width: 100%; max-width: 16rem; }
+.field input[type="text"], .field select { width: 100%; max-width: 16rem; }
 
 /* ボタン（主は .btn-primary、ほかは .btn。色と線は皮が持つ） */
 .btn, .btn-primary { display: inline-flex; align-items: center; justify-content: center; }
 .btn:disabled, .btn-primary:disabled { opacity: 0.5; cursor: default; }
 
 /* 読みもの（guide.html） */
-.content h3 { margin: var(--sp-4) 0 var(--sp-1); }
 .content p + p { margin-top: var(--sp-2); }
 .content ul, .content ol { padding-left: 1.3rem; margin: var(--sp-1) 0; }
 .faq dt { font-weight: 700; margin-top: var(--sp-4); }
@@ -129,7 +128,7 @@ output.counter, output#status-text, output#reader-hint { display: block; font-si
 .field .inline, label.inline { display: inline-flex; align-items: center; gap: var(--sp-2); font-weight: 400; min-height: var(--tap); margin-right: var(--sp-3); }
 .field .label { display: block; font-weight: 700; }
 .field input[type="checkbox"], .field input[type="radio"] { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
-#out { font-size: var(--fs-s); font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
+#out { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
 
 .actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; margin-top: var(--sp-4); }   /* 見本の下（SCREEN.md 1.1: 文 → 見本 → 印刷・コピー） */
 .copy-group { display: inline-flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; }
@@ -175,9 +174,9 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
 .rv-body { border: 0; border-radius: 0; font-size: 1.6rem; line-height: 2.4; padding: var(--sp-4) var(--sp-4) var(--sp-8); max-width: 46rem; margin: 0 auto; }
 
 /* 固定バー（SCREEN D59: 上端。下端はアンカー広告が使う）。皮の .fixed-bar を上に貼る */
-.fixed-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; border-top: 0; border-bottom: 1px solid var(--border); padding: 0; }
+.fixed-bar { position: fixed; top: 0; bottom: auto; left: 0; right: 0; z-index: 50; border-top: 0; border-bottom: 1px solid var(--border); padding: 0; }
 .fixbar-in { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-1) var(--sp-4); }
-.fixed-bar a { font-weight: 700; text-decoration: none; }
+.fixed-bar a { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 700; text-decoration: none; }
 
 /* 使い方ページ */
 .content table { border-collapse: collapse; font-size: var(--fs-s); margin: var(--sp-1) 0; width: 100%; }
@@ -209,5 +208,4 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
 
 /* この道具について（結果の後ろの折りたたみ。使い方ページの要約。AdSense 審査 2026-10-04） */
 details.card.opt.about-tool > summary { white-space: normal; }   /* 長い summary を折り返す */
-details.about-tool h3 { margin: var(--sp-4) 0 var(--sp-1); }
 details.about-tool ul { padding-left: 1.2rem; margin: var(--sp-1) 0 var(--sp-2); }
