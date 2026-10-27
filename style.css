@@ -152,7 +152,7 @@ output.counter, output#status-text, output#reader-hint { display: block; font-si
 .sheet ruby { ruby-position: over; }
 .sheet-empty { color: #4c565f; }
 .sheet .w { cursor: pointer; border-radius: var(--radius); }
-.sheet .w:hover, .sheet .w:focus-visible { background: #dcecef; outline: none; }
+.sheet .w:hover, .sheet .w:focus-visible { background: #dcecef; }
 .sheet .w.m { text-decoration: underline dotted #0e5a6b; text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
 .sheet .w.user rt { color: #197a4b; }
 #sec-preview .hint { font-size: var(--fs-s); color: var(--muted); margin: calc(-1 * var(--sp-2)) 0 var(--sp-2); }
