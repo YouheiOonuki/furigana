@@ -22,8 +22,8 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#eef0f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15191d" media="(prefers-color-scheme: dark)">
 
   <script type="application/ld+json">
   {
@@ -50,9 +50,9 @@
 <body class="tool-page">
 
   <!-- 固定バー（SCREEN D59: 上端）。見本ができて、印刷ボタンが画面の外にあるときだけ出す -->
-  <div class="fixbar" id="fixbar" hidden>
+  <div class="fixed-bar" id="fixbar" hidden>
     <div class="fixbar-in">
-      <button type="button" class="btn btn-small" data-action="print">Print</button>
+      <button type="button" class="btn-primary" data-action="print">Print</button>
       <a href="#sec-preview">Preview</a>
     </div>
   </div>
@@ -69,7 +69,7 @@
     <section class="card" id="sec-input" aria-label="Text and settings">
       <label for="src" class="big-label">Japanese text</label>
       <textarea id="src" rows="6" placeholder="e.g. 三毛猫が大勢の前で額に汗をかいた。" lang="ja" autocomplete="off" spellcheck="false"></textarea>
-      <output class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="warn" aria-live="polite"></span></output>
+      <output class="counter small"><span id="count">0</span> / 10,000 characters <span id="limit-msg" class="field-error" aria-live="polite"></span></output>
       <div class="field">
         <label for="reader">Show furigana for</label>
         <select id="reader">
@@ -94,18 +94,18 @@
       <h2 id="h-preview">Preview</h2>
       <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty"></p></div>
       <div class="actions" id="actions">
-        <button type="button" class="btn" data-action="print">Print (A4)</button>
+        <button type="button" class="btn-primary" data-action="print">Print (A4)</button>
         <span class="copy-group">
-          <label for="format" class="sr-only">Copy format</label>
+          <label for="format" class="visually-hidden">Copy format</label>
           <select id="format">
             <option value="html">Ruby (paste into documents)</option>
             <option value="aozora">Aozora style ｜漢字《かんじ》</option>
             <option value="brackets">Brackets 漢字（かんじ）</option>
             <option value="hiragana">Hiragana only</option>
           </select>
-          <button type="button" class="btn btn-sub" id="copy">Copy</button>
+          <button type="button" class="btn" id="copy">Copy</button>
         </span>
-        <button type="button" class="btn btn-sub" id="open-reading">Reading view</button>
+        <button type="button" class="btn" id="open-reading">Reading view</button>
       </div>
     </section>
 
@@ -146,16 +146,16 @@
       <summary>Save, back up, bookmarklet</summary>
       <p class="small">Your text and corrections are saved only in this browser (localStorage, keys <code>furigana_*</code>) and never sent anywhere. Use these buttons to back up, restore or clear.</p>
       <p class="btn-row">
-        <button type="button" class="btn btn-sub" id="backup-export">Save to file</button>
-        <button type="button" class="btn btn-sub" id="backup-import">Load from file</button>
-        <button type="button" class="btn btn-sub" id="clear-all">Clear text</button>
-        <button type="button" class="btn btn-sub" data-reset-storage="furigana_">Delete everything saved (reset)</button>
+        <button type="button" class="btn" id="backup-export">Save to file</button>
+        <button type="button" class="btn" id="backup-import">Load from file</button>
+        <button type="button" class="btn" id="clear-all">Clear text</button>
+        <button type="button" class="btn" data-reset-storage="furigana_">Delete everything saved (reset)</button>
       </p>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
-      <h3 class="h3">Bookmarklet (computer)</h3>
+      <h3>Bookmarklet (computer)</h3>
       <p class="small">Drag the link to your bookmarks bar. On any page, click it to open the selected text (or the page text) here.</p>
-      <p><a id="bookmarklet" class="bookmarklet" href="#">Add furigana</a></p>
+      <p><a id="bookmarklet" class="chip" href="#">Add furigana</a></p>
     </details>
 
     <p class="small"><a href="./guide.html">How it works, accuracy and FAQ</a></p>
@@ -184,21 +184,21 @@
       <p class="small" id="fix-note"></p>
       <label for="fix-reading">Reading (hiragana)</label>
       <input type="text" id="fix-reading" autocomplete="off" lang="ja">
-      <p class="small warn" id="fix-error" aria-live="polite"></p>
+      <p class="field-error" id="fix-error" aria-live="polite"></p>
       <p class="small">Saved on this device and used for your next texts too.</p>
       <div class="btn-row">
-        <button type="submit" class="btn" value="save">Use this reading</button>
-        <button type="submit" class="btn btn-sub" value="skip">No furigana</button>
-        <button type="submit" class="btn btn-sub" value="reset" id="fix-reset">Undo correction</button>
-        <button type="submit" class="btn btn-sub" value="cancel" formnovalidate>Cancel</button>
+        <button type="submit" class="btn-primary" value="save">Use this reading</button>
+        <button type="submit" class="btn" value="skip">No furigana</button>
+        <button type="submit" class="btn" value="reset" id="fix-reset">Undo correction</button>
+        <button type="submit" class="btn" value="cancel" formnovalidate>Cancel</button>
       </div>
     </form>
   </dialog>
 
   <dialog id="reading-view" class="reading-view" aria-label="Reading view">
     <div class="rv-bar">
-      <button type="button" class="btn btn-sub" id="rv-smaller" aria-label="Smaller text">A−</button>
-      <button type="button" class="btn btn-sub" id="rv-larger" aria-label="Larger text">A＋</button>
+      <button type="button" class="btn" id="rv-smaller" aria-label="Smaller text">A−</button>
+      <button type="button" class="btn" id="rv-larger" aria-label="Larger text">A＋</button>
       <button type="button" class="btn" id="rv-close">Close</button>
     </div>
     <div id="rv-body" class="rv-body sheet" lang="ja"></div>

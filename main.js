@@ -386,7 +386,7 @@
     if (!keys.length) { el.dictList.innerHTML = '<li class="small">' + Calc.escHtml(T.dictEmpty) + '</li>'; return; }
     el.dictList.innerHTML = keys.map(function (k) {
       return '<li><span lang="ja">' + Calc.escHtml(k) + '</span> → <span lang="ja">' + Calc.escHtml(userDict[k] || T.skipLabel) + '</span> ' +
-        '<button type="button" class="btn btn-small btn-sub" data-del="' + Calc.escHtml(k) + '">' + Calc.escHtml(T.del) + '</button></li>';
+        '<button type="button" class="btn" data-del="' + Calc.escHtml(k) + '">' + Calc.escHtml(T.del) + '</button></li>';
     }).join('');
   }
   el.dictList.addEventListener('click', function (ev) {

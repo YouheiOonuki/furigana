@@ -22,8 +22,8 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#eef0f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15191d" media="(prefers-color-scheme: dark)">
 
   <script type="application/ld+json">
   {
@@ -50,9 +50,9 @@
 <body class="tool-page">
 
   <!-- 固定バー（SCREEN D59: 上端）。見本ができて、印刷ボタンが画面の外にあるときだけ出す -->
-  <div class="fixbar" id="fixbar" hidden>
+  <div class="fixed-bar" id="fixbar" hidden>
     <div class="fixbar-in">
-      <button type="button" class="btn btn-small" data-action="print">印刷する</button>
+      <button type="button" class="btn-primary" data-action="print">印刷する</button>
       <a href="#sec-preview">見本へ</a>
     </div>
   </div>
@@ -69,7 +69,7 @@
     <section class="card" id="sec-input" aria-label="文と設定">
       <label for="src" class="big-label">ふりがなを付ける文</label>
       <textarea id="src" rows="6" placeholder="例：三毛猫が大勢の前で額に汗をかいた。" autocomplete="off" spellcheck="false"></textarea>
-      <output class="counter small"><span id="count">0</span> / 10,000 字 <span id="limit-msg" class="warn" aria-live="polite"></span></output>
+      <output class="counter small"><span id="count">0</span> / 10,000 字 <span id="limit-msg" class="field-error" aria-live="polite"></span></output>
       <div class="field">
         <label for="reader">読む人</label>
         <select id="reader">
@@ -94,18 +94,18 @@
       <h2 id="h-preview">見本</h2>
       <div id="preview" class="sheet size-m" lang="ja"><p class="sheet-empty"></p></div>
       <div class="actions" id="actions">
-        <button type="button" class="btn" data-action="print">印刷する（A4）</button>
+        <button type="button" class="btn-primary" data-action="print">印刷する（A4）</button>
         <span class="copy-group">
-          <label for="format" class="sr-only">コピーの形式</label>
+          <label for="format" class="visually-hidden">コピーの形式</label>
           <select id="format">
             <option value="html">ルビつき HTML（文書に貼る）</option>
             <option value="aozora">青空文庫形式 ｜漢字《かんじ》</option>
             <option value="brackets">括弧 漢字（かんじ）</option>
             <option value="hiragana">ひらがなだけ</option>
           </select>
-          <button type="button" class="btn btn-sub" id="copy">コピー</button>
+          <button type="button" class="btn" id="copy">コピー</button>
         </span>
-        <button type="button" class="btn btn-sub" id="open-reading">大きな字で読む</button>
+        <button type="button" class="btn" id="open-reading">大きな字で読む</button>
       </div>
     </section>
 
@@ -146,20 +146,20 @@
       <summary>保存・書き出し・ブックマークレット</summary>
       <p class="small">入力内容はこの端末のブラウザ（localStorage、キー <code>furigana_*</code>）にだけ保存され、外部には送信されません。書き出し・読み込み・消去はこの画面のボタンから。</p>
       <p class="btn-row">
-        <button type="button" class="btn btn-sub" id="backup-export">ファイルに書き出す</button>
-        <button type="button" class="btn btn-sub" id="backup-import">ファイルから読み込む</button>
-        <button type="button" class="btn btn-sub" id="clear-all">本文を消す</button>
-        <button type="button" class="btn btn-sub" data-reset-storage="furigana_">保存した内容をすべて消す（初期状態に戻す）</button>
+        <button type="button" class="btn" id="backup-export">ファイルに書き出す</button>
+        <button type="button" class="btn" id="backup-import">ファイルから読み込む</button>
+        <button type="button" class="btn" id="clear-all">本文を消す</button>
+        <button type="button" class="btn" data-reset-storage="furigana_">保存した内容をすべて消す（初期状態に戻す）</button>
       </p>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
-      <h3 class="h3">ブックマークレット（パソコン）</h3>
+      <h3>ブックマークレット（パソコン）</h3>
       <p class="small">下のリンクをブックマークバーへドラッグ。読みたいページで押すと、選んだ文（なければ本文）をここで開きます。</p>
-      <p><a id="bookmarklet" class="bookmarklet" href="#">ふりがなを振る</a></p>
+      <p><a id="bookmarklet" class="chip" href="#">ふりがなを振る</a></p>
     </details>
 
     <!-- about-tool: 道具の説明（使い方ページの要約。yorozu-plans QUEUE Q-003） -->
-    <details class="about-tool card opt no-print" id="about-tool">
+    <details class="about-tool card opt" id="about-tool">
       <summary>この道具について（使い方・しくみ・注意）</summary>
       <h3>ふりがなメーカーでわかること</h3>
       <p>貼った文の漢字に、読む人の学年に合わせてふりがなを振ります。印刷するか、形式を選んでコピーできます。</p>
@@ -202,21 +202,21 @@
       <p class="small" id="fix-note"></p>
       <label for="fix-reading">読み（ひらがな）</label>
       <input type="text" id="fix-reading" autocomplete="off" lang="ja">
-      <p class="small warn" id="fix-error" aria-live="polite"></p>
+      <p class="field-error" id="fix-error" aria-live="polite"></p>
       <p class="small">この端末の辞書に入り、次の文にも使われます。</p>
       <div class="btn-row">
-        <button type="submit" class="btn" value="save">この読みにする</button>
-        <button type="submit" class="btn btn-sub" value="skip">振らない</button>
-        <button type="submit" class="btn btn-sub" value="reset" id="fix-reset">元に戻す</button>
-        <button type="submit" class="btn btn-sub" value="cancel" formnovalidate>やめる</button>
+        <button type="submit" class="btn-primary" value="save">この読みにする</button>
+        <button type="submit" class="btn" value="skip">振らない</button>
+        <button type="submit" class="btn" value="reset" id="fix-reset">元に戻す</button>
+        <button type="submit" class="btn" value="cancel" formnovalidate>やめる</button>
       </div>
     </form>
   </dialog>
 
   <dialog id="reading-view" class="reading-view" aria-label="大きな字で読む">
     <div class="rv-bar">
-      <button type="button" class="btn btn-sub" id="rv-smaller" aria-label="字を小さく">A−</button>
-      <button type="button" class="btn btn-sub" id="rv-larger" aria-label="字を大きく">A＋</button>
+      <button type="button" class="btn" id="rv-smaller" aria-label="字を小さく">A−</button>
+      <button type="button" class="btn" id="rv-larger" aria-label="字を大きく">A＋</button>
       <button type="button" class="btn" id="rv-close">閉じる</button>
     </div>
     <div id="rv-body" class="rv-body sheet" lang="ja"></div>
