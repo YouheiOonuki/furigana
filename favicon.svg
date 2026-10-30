@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <!-- ふりがなメーカー: 紙の上の漢字（四角）と、その上の小さなふりがな（朱の点） -->
-  <rect width="64" height="64" rx="14" fill="#8b4513"/>
-  <rect x="9" y="9" width="46" height="46" rx="5" fill="#faf6ee"/>
+  <rect width="64" height="64" rx="14" fill="#0e5a6b"/>
+  <rect x="9" y="9" width="46" height="46" rx="5" fill="#eef0f2"/>
   <circle cx="22" cy="19" r="3" fill="#c0392b"/>
   <circle cx="32" cy="19" r="3" fill="#c0392b"/>
   <circle cx="42" cy="19" r="3" fill="#c0392b"/>
-  <path d="M17 29h30M32 26v21M19 37h26M22 47h20" stroke="#3a3025" stroke-width="4" stroke-linecap="round"/>
+  <path d="M17 29h30M32 26v21M19 37h26M22 47h20" stroke="#1d2125" stroke-width="4" stroke-linecap="round"/>
 </svg>
