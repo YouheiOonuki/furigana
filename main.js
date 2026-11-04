@@ -268,6 +268,7 @@
     el.preview.innerHTML = sheetHtml(settings.showMarks, true);
     el.out.value = formatText(settings.format);
     updateFixbar();
+    window.yzUsed?.();
   }
   function formatText(f) {
     var p = last.pieces;
