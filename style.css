@@ -116,21 +116,23 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   border-top: 1px solid var(--border);
   margin-top: var(--sp-2);
 }
-.footer-nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 0 var(--sp-4); margin-bottom: var(--sp-2); }
-.footer-nav a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--muted); text-decoration: none; }
+.footer-nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); margin-bottom: var(--sp-2); }   /* 折れた行の間 8px（QUEUE Q-474） */
+.footer-nav a { display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); min-width: var(--tap); color: var(--muted); text-decoration: none; }
 .footer-nav a:hover, .footer-nav a[aria-current="page"] { color: var(--accent); }
 
 /* ===========================
    ふりがなメーカー
    =========================== */
 .lang-switch { font-size: var(--fs-s); margin-top: var(--sp-1); }
-.lang-switch a { display: inline-flex; align-items: center; min-height: var(--tap); }
+.lang-switch a { display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); min-width: var(--tap); }
+/* 道具の下に 1 つだけ置く使い方へのリンクも押せる高さに（QUEUE Q-474） */
+main > p.small > a:only-child { display: inline-flex; align-items: center; min-height: var(--tap); }
 .big-label { display: block; font-weight: 700; margin-bottom: var(--sp-1); }
 .card textarea { width: 100%; line-height: var(--lh-body); resize: vertical; }
 #src { min-height: 8.5rem; }
 output.counter, output#status-text, output#reader-hint { display: block; font-size: var(--fs-s); font-weight: 400; }
 .counter { margin: var(--sp-1) 0 var(--sp-3); }
-.field .inline, label.inline { display: inline-flex; align-items: center; gap: var(--sp-2); font-weight: 400; min-height: var(--tap); margin-right: var(--sp-3); }
+.field .inline, label.inline { display: inline-flex; align-items: center; gap: var(--sp-2); font-weight: 400; min-height: var(--tap); margin-right: var(--sp-3); margin-bottom: var(--sp-2); }   /* 折れた行の間 8px（QUEUE Q-474） */
 .field .label { display: block; font-weight: 700; }
 .field input[type="checkbox"], .field input[type="radio"] { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
 #out { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
