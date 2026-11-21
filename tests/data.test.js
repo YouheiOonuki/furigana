@@ -20,9 +20,20 @@ test('学年別漢字配当表: 学年ごとの字数 80・160・200・202・193
   assert.equal(new Set(Array.from(all)).size, 1026);
 });
 
+// 隣の repo の場所は git の共通の .git の親から取る（worktree でも主の作業コピーの隣を見る。yorozu-plans D707）。
+// git が無い所（git archive で取り出した木）や隣が無い所では、理由を 1 行出して飛ばす
+function siblingPath(repo, file) {
+  let common;
+  try {
+    common = require('node:child_process').execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd: path.join(__dirname, '..'), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch { return { skip: `${repo} を探せない（git の作業コピーの外）` }; }
+  const p = path.join(path.dirname(path.dirname(common)), repo, file);
+  return fs.existsSync(p) ? { p } : { skip: `${repo} が隣に無い（${p}）` };
+}
+
 test('学年別漢字配当表: gakushu-print と同じ（写しのずれを検出。gakushu-print が隣に無ければ飛ばす）', (t) => {
-  const p = path.join(__dirname, '..', '..', 'gakushu-print', 'constants.js');
-  if (!fs.existsSync(p)) { t.skip('gakushu-print が無い'); return; }
+  const { p, skip } = siblingPath('gakushu-print', 'constants.js');
+  if (skip) { t.skip(skip); return; }
   const other = require(p);
   assert.deepEqual(CONSTANTS.kanjiByGrade.value, other.kanjiByGrade.value);
 });
