@@ -61,3 +61,11 @@ test('Service Worker: キャッシュ名は furigana- で始まり、辞書は�
   assert.match(s, /const DICT_CACHE\s+= `\$\{CACHE_PREFIX\}dict-lindera-2\.0\.0`;/);
   assert.match(s, /key !== CACHE_NAME && key !== DICT_CACHE/);
 });
+
+// 型 A（yorozu-plans D896・Q-1138）: 英語の使い方の <main> の最初の段落は答えの文。「▶ Open…」のリンクはその後ろ
+test('英語の使い方: 最初の段落は答えの文、リンクはその後ろ', () => {
+  const main = read('en/guide.html').split('<main')[1];
+  const first = main.match(/<p[^>]*>([\s\S]*?)<\/p>/)[1];
+  assert.equal(first, 'Paste Japanese text and the Furigana Generator adds readings above the kanji. You choose which kanji get furigana by Japanese school grade, then print the result or copy it as ruby HTML.');
+  assert.ok(main.indexOf(first) < main.indexOf('▶ Open the Furigana Generator'));
+});
