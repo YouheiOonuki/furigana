@@ -69,3 +69,14 @@ test('英語の使い方: 最初の段落は答えの文、リンクはその後
   assert.equal(first, 'Paste Japanese text and the Furigana Generator adds readings above the kanji. You choose which kanji get furigana by Japanese school grade, then print the result or copy it as ruby HTML.');
   assert.ok(main.indexOf(first) < main.indexOf('▶ Open the Furigana Generator'));
 });
+
+test('Q-1232: 日本語トップの title・description・og は「習った漢字には振らない」を言い、外に送らない旨の断りを置かない', () => {
+  const s = read('index.html');
+  const T = 'ふりがなメーカー｜習った漢字には振らない学年別ルビ・A4印刷｜yorozu-craft';
+  assert.ok(s.includes(`<title>${T}</title>`));
+  assert.ok(s.includes(`<meta property="og:title" content="${T}">`));
+  assert.ok(s.includes('<meta name="description" content="貼った文の漢字に、読む人の学年に合わせてふりがな（ルビ）を振ります。前の学年までに習った漢字だけの語には振りません。自信のない読みには印が付き、タップで直せます。A4 で印刷、Word 用にコピー。">'));
+  assert.ok(s.includes('<meta property="og:description" content="貼った文に学年別のふりがな。自信のない読みに印、タップで直して A4 印刷。">'));
+  const head = s.slice(0, s.indexOf('</head>'));
+  assert.ok(!/外に送り|外に送らない/.test(head));
+});
