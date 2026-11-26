@@ -1,120 +1,96 @@
-// 端末の辞書・設定・バックアップ（D31）・入力の上限・ブックマークレット（D73）のテスト
+// バックアップファイル（書き出し・読み込み）の形のテスト（README「ツールを追加するとき」20・決定 D31。yorozu-plans ROADMAP 7.256・7.271）。
+// 正本は youheioonuki.github.io の tools/common/backup.test.js。このファイルは repo の値を持たない。
+// repo の値は、同じフォルダの backup.values.json だけが持つ:
+//   module   … backupFileName・buildBackup・parseBackup を出すファイル（repo の最上位から）
+//   tool     … ツール名（ファイルの名前と、ファイルの中の tool）
+//   data     … 書き出す中身の見本
+//   required … 読み込むとき data に無ければ断る名前
+//   errors   … 断ったときの返し方。"message"（既定。r.error に画面の文）か "code"（r.code に理由の名前。画面の文は text.js が作る）
+// 正規化（normalize〜）など repo だけの確かめは、同じフォルダの別のテストに置く。
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const vm = require('node:vm');
-const Calc = require('../calc.js');
+const fs = require('node:fs');
+const path = require('node:path');
 
-test('端末の辞書: 漢字を含む表記とかなの読みだけ残す。カタカナはひらがなに。"" は「振らない」', () => {
-  const d = Calc.normalizeUserDict({ 額: 'ヒタイ', 大勢: 'おおぜい', 三毛猫: '', abc: 'えー', 猫: 'neko', 犬: 5, ['長'.repeat(40)]: 'ながい', '<b>': 'x' });
-  assert.deepEqual(d, { 額: 'ひたい', 大勢: 'おおぜい', 三毛猫: '' });
-  assert.deepEqual(Calc.normalizeUserDict(null), {});
-  assert.deepEqual(Calc.normalizeUserDict([1, 2]), {});
-  assert.equal(Calc.cleanReading(' ひ た い '), 'ひたい');
-  assert.equal(Calc.cleanReading('hitai'), null);
-  assert.equal(Calc.cleanReading(''), null);
-});
+const ROOT = path.join(__dirname, '..');
+const V = JSON.parse(fs.readFileSync(path.join(__dirname, 'backup.values.json'), 'utf8'));
+const KEYS = ['module', 'tool', 'data', 'required', 'errors'];
+const { backupFileName, buildBackup, parseBackup } = require(path.join(ROOT, V.module));
+const TOOL = V.tool;
+const DATA = V.data;
+const REQUIRED = V.required;
+const BY_CODE = V.errors === 'code';
 
-test('設定の正規化', () => {
-  assert.deepEqual(Calc.normalizeSettings({ reader: '3', size: 'xl', script: 'romaji', format: 'aozora', credit: false }),
-    { reader: 3, showMarks: true, printMarks: false, size: 'xl', vertical: false, script: 'romaji', credit: false, format: 'aozora' });
-  assert.equal(Calc.normalizeSettings({ reader: 99 }).reader, 0);
-  assert.equal(Calc.normalizeSettings(null).format, 'html');
-});
-
-test('バックアップ: 書き出し → 読み込み。ほかのツール・新しい版・中身の欠けは断る', () => {
-  const data = { dict: { 額: 'ひたい' }, settings: Calc.normalizeSettings({}), text: '三毛猫' };
-  const b = Calc.buildBackup('furigana', data, new Date('2026-09-24T01:02:03Z'));
-  assert.equal(Calc.backupFileName('furigana', new Date(2026, 8, 24)), 'furigana-backup-20260924.json');
-  const r = Calc.parseBackup(JSON.stringify(b), 'furigana', ['dict']);
-  assert.equal(r.ok, true);
-  assert.deepEqual(r.data, data);
-  assert.equal(Calc.parseBackup('{', 'furigana').ok, false);
-  assert.match(Calc.parseBackup(JSON.stringify({ ...b, tool: 'loan-sim' }), 'furigana').error, /loan-sim/);
-  assert.match(Calc.parseBackup(JSON.stringify({ ...b, version: 2 }), 'furigana').error, /新しい版/);
-  assert.equal(Calc.parseBackup(JSON.stringify({ ...b, data: {} }), 'furigana', ['dict']).ok, false);
-});
-
-test('入力の上限: 10,000 字で切り、切った字数を返す', () => {
-  assert.deepEqual(Calc.clampInput('あ'.repeat(10)), { text: 'あ'.repeat(10), cut: 0 });
-  const r = Calc.clampInput('あ'.repeat(10005));
-  assert.equal(r.text.length, 10000);
-  assert.equal(r.cut, 5);
-});
-
-// ブックマークレットを、偽のページ（選んだ文字・window.open）で実際に動かす
-function runBookmarklet(href, { selection = '', bodyText = '', mainText = null }) {
-  assert.ok(href.startsWith('javascript:'));
-  const src = decodeURIComponent(href.slice('javascript:'.length));
-  const opened = [];
-  const listeners = [];
-  const fakeWin = { posted: [], postMessage(msg, origin) { this.posted.push({ msg, origin }); } };
-  const ctx = {
-    getSelection: () => ({ toString: () => selection }),
-    document: {
-      querySelector: () => (mainText == null ? null : { innerText: mainText }),
-      body: { innerText: bodyText },
-    },
-    encodeURIComponent, String, JSON,
-  };
-  ctx.window = {
-    getSelection: ctx.getSelection,
-    open: (u, target) => { opened.push({ u, target }); return fakeWin; },
-    addEventListener: (type, f) => listeners.push(f),
-    removeEventListener: () => {},
-  };
-  vm.runInNewContext(src, ctx);
-  return { opened, listeners, fakeWin };
+// 断ったか。message は画面の文の型、code は理由の名前（どちらも省けば、空でない何かがあればよい）
+function refused(r, message, code, label) {
+  assert.equal(r.ok, false, label);
+  if (BY_CODE) {
+    if (code) assert.equal(r.code, code, label);
+    else assert.ok(typeof r.code === 'string' && r.code.length > 0, label);
+  } else if (message) assert.match(r.error, message, label);
+  else assert.ok(typeof r.error === 'string' && r.error.length > 0, label);
 }
 
-test('ブックマークレット: 選んだ文字を #t= で新しいタブに渡す（相手のページには書き込まない）', () => {
-  const href = Calc.makeBookmarklet('https://yorozu-craft.com/furigana/');
-  const { opened } = runBookmarklet(href, { selection: '  三毛猫が大勢いる。 ' });
-  assert.equal(opened.length, 1);
-  assert.equal(opened[0].target, '_blank');
-  assert.ok(opened[0].u.startsWith('https://yorozu-craft.com/furigana/#t='));
-  const hash = opened[0].u.slice(opened[0].u.indexOf('#'));
-  assert.equal(Calc.readHashText(hash), '三毛猫が大勢いる。');
+test('値のファイルは決まった名前だけを、決まった形で持つ', () => {
+  for (const k of Object.keys(V)) assert.ok(KEYS.includes(k), `backup.values.json の名前 ${k}`);
+  assert.ok(typeof V.module === 'string' && V.module, 'module');
+  assert.ok(typeof TOOL === 'string' && TOOL, 'tool');
+  assert.ok(DATA && typeof DATA === 'object' && !Array.isArray(DATA), 'data');
+  assert.ok(Array.isArray(REQUIRED) && REQUIRED.length && REQUIRED.every((k) => k in DATA), 'required は data の名前');
+  assert.ok(V.errors === undefined || ['message', 'code'].includes(V.errors), 'errors');
 });
 
-test('ブックマークレット: 選んでいなければ本文（main があれば main）。長い文は postMessage で、準備できた合図の後に渡す', () => {
-  const href = Calc.makeBookmarklet('https://yorozu-craft.com/furigana/');
-  assert.equal(Calc.readHashText(runBookmarklet(href, { bodyText: 'ページの本文' }).opened[0].u.replace(/^[^#]*/, '')), 'ページの本文');
-  assert.equal(Calc.readHashText(runBookmarklet(href, { bodyText: 'x', mainText: '記事の本文' }).opened[0].u.replace(/^[^#]*/, '')), '記事の本文');
-  const long = '漢'.repeat(12000);
-  const { opened, listeners, fakeWin } = runBookmarklet(href, { selection: long });
-  assert.equal(opened[0].u, 'https://yorozu-craft.com/furigana/#pm');
-  // ほかのオリジン・ほかの窓からの合図は無視
-  listeners[0]({ origin: 'https://evil.example', source: fakeWin, data: { type: 'furigana-ready' } });
-  listeners[0]({ origin: 'https://yorozu-craft.com', source: {}, data: { type: 'furigana-ready' } });
-  assert.equal(fakeWin.posted.length, 0);
-  listeners[0]({ origin: 'https://yorozu-craft.com', source: fakeWin, data: { type: 'furigana-ready' } });
-  assert.equal(fakeWin.posted.length, 1);
-  assert.equal(fakeWin.posted[0].origin, 'https://yorozu-craft.com');
-  assert.equal(fakeWin.posted[0].msg.text.length, Calc.MAX_CHARS);   // 10,000 字で切る
+test('backupFileName: <ツール名>-backup-YYYYMMDD.json（端末の日付）', () => {
+  assert.equal(backupFileName(TOOL, new Date(2026, 8, 24, 23, 59)), TOOL + '-backup-20260924.json');
+  assert.equal(backupFileName(TOOL, new Date(2027, 0, 5)), TOOL + '-backup-20270105.json');
 });
 
-test('#t= の読み取り: 壊れた値は null、上限で切る', () => {
-  assert.equal(Calc.readHashText('#t=%E0%A4%A'), null);
-  assert.equal(Calc.readHashText('#s=abc'), null);
-  assert.equal(Calc.readHashText('#t=' + encodeURIComponent('あ'.repeat(10010))).length, 10000);
+test('buildBackup: tool・version・exportedAt・data の形', () => {
+  const b = buildBackup(TOOL, DATA, new Date('2026-09-24T01:02:03Z'));
+  assert.deepEqual(Object.keys(b), ['tool', 'version', 'exportedAt', 'data']);
+  assert.equal(b.tool, TOOL);
+  assert.equal(b.version, 1);
+  assert.equal(b.exportedAt, '2026-09-24T01:02:03.000Z');
+  assert.deepEqual(b.data, DATA);
 });
 
-// K191 段 2 の F2（ROADMAP 7.88）: リンク（#t=）・開いたページ（#pm）から来た文で、保存中の下書きを黙って置き換えない
-test('来た文: 下書きが無ければ聞かずに入れる（ブックマークレットのいつもの使い方）', () => {
-  let asked = 0;
-  assert.equal(Calc.acceptIncoming('', '吾輩は猫である', () => { asked++; return false; }), '吾輩は猫である');
-  assert.equal(Calc.acceptIncoming('同じ文', '同じ文', () => { asked++; return false; }), '同じ文', '同じ文なら聞かない');
-  assert.equal(asked, 0);
+test('parseBackup: 書き出したファイルはそのまま読める', () => {
+  const r = parseBackup(JSON.stringify(buildBackup(TOOL, DATA)), TOOL, REQUIRED);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.data, DATA);
 });
-test('来た文: 下書きがあり別の文なら 1 回聞き、OK なら入れる', () => {
-  let asked = 0;
-  assert.equal(Calc.acceptIncoming('書きかけの下書き', '別の文', () => { asked++; return true; }), '別の文');
-  assert.equal(asked, 1);
+
+test('parseBackup: ほかのツールのファイルは断る', () => {
+  const r = parseBackup(JSON.stringify(buildBackup('other-tool', DATA)), TOOL, REQUIRED);
+  refused(r, /ほかのツール（other-tool）/, 'otherTool');
+  if (BY_CODE) assert.equal(r.tool, 'other-tool');
 });
-test('来た文: キャンセルなら入れない（下書きが残る）。main.js は判断をこの関数に任せる', () => {
-  assert.equal(Calc.acceptIncoming('書きかけの下書き', '別の文', () => false), null);
-  const main = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'main.js'), 'utf8');
-  assert.match(main, /Calc\.acceptIncoming\(el\.src\.value, t,/);
-  assert.equal((main.match(/putIncoming\(/g) || []).length, 3, '定義・#t=・#pm の 3 か所');
-  assert.doesNotMatch(main, /el\.src\.value = t;|el\.src\.value = Calc\.clampInput\(ev\.data\.text\)/, '来た文を直接入れる道が残っていない');
+
+test('parseBackup: 壊れた JSON・JSON でないものは断る', () => {
+  for (const text of ['{"tool": "' + TOOL, '', 'こんにちは', 'null', '[]', '123']) {
+    refused(parseBackup(text, TOOL, REQUIRED), /読み取れませんでした/, 'unreadable', text);
+  }
+});
+
+test('parseBackup: 項目が欠けている・形が違うものは断る', () => {
+  const ok = buildBackup(TOOL, DATA);
+  const cases = [
+    Object.assign({}, ok, { tool: undefined }),
+    Object.assign({}, ok, { version: undefined }),
+    Object.assign({}, ok, { version: '1' }),
+    Object.assign({}, ok, { data: undefined }),
+    Object.assign({}, ok, { data: [] }),
+    Object.assign({}, ok, { data: 'x' }),
+  ];
+  REQUIRED.forEach((k) => {
+    const data = Object.assign({}, DATA);
+    delete data[k];
+    cases.push(Object.assign({}, ok, { data }));
+  });
+  cases.forEach((c, i) => refused(parseBackup(JSON.stringify(c), TOOL, REQUIRED), null, null, 'case ' + i));
+});
+
+test('parseBackup: 新しい版の形式は、その旨を伝えて断る', () => {
+  const r = parseBackup(JSON.stringify(Object.assign(buildBackup(TOOL, DATA), { version: 2 })), TOOL, REQUIRED);
+  refused(r, /新しい版/, 'newer');
 });
