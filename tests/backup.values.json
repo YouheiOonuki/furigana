@@ -1,0 +1,10 @@
+{
+  "module": "calc.js",
+  "tool": "furigana",
+  "data": {
+    "dict": { "額": "ひたい" },
+    "settings": { "reader": 0, "showMarks": true, "printMarks": false, "size": "m", "vertical": false, "script": "hiragana", "credit": true, "format": "html" },
+    "text": "三毛猫"
+  },
+  "required": ["dict"]
+}

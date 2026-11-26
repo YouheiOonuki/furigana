@@ -1,4 +1,4 @@
-// 端末の辞書・設定・バックアップ（D31）・入力の上限・ブックマークレット（D73）のテスト
+// 端末の辞書・設定・入力の上限・ブックマークレット（D73）のテスト。名前を backup.test.js から変えた（2026-11-27）: バックアップ（D31）の確かめは共通の本体（同じフォルダの backup.test.js。値は backup.values.json）へ移した（yorozu-plans 7.271）。
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const vm = require('node:vm');
@@ -19,19 +19,6 @@ test('設定の正規化', () => {
     { reader: 3, showMarks: true, printMarks: false, size: 'xl', vertical: false, script: 'romaji', credit: false, format: 'aozora' });
   assert.equal(Calc.normalizeSettings({ reader: 99 }).reader, 0);
   assert.equal(Calc.normalizeSettings(null).format, 'html');
-});
-
-test('バックアップ: 書き出し → 読み込み。ほかのツール・新しい版・中身の欠けは断る', () => {
-  const data = { dict: { 額: 'ひたい' }, settings: Calc.normalizeSettings({}), text: '三毛猫' };
-  const b = Calc.buildBackup('furigana', data, new Date('2026-09-24T01:02:03Z'));
-  assert.equal(Calc.backupFileName('furigana', new Date(2026, 8, 24)), 'furigana-backup-20260924.json');
-  const r = Calc.parseBackup(JSON.stringify(b), 'furigana', ['dict']);
-  assert.equal(r.ok, true);
-  assert.deepEqual(r.data, data);
-  assert.equal(Calc.parseBackup('{', 'furigana').ok, false);
-  assert.match(Calc.parseBackup(JSON.stringify({ ...b, tool: 'loan-sim' }), 'furigana').error, /loan-sim/);
-  assert.match(Calc.parseBackup(JSON.stringify({ ...b, version: 2 }), 'furigana').error, /新しい版/);
-  assert.equal(Calc.parseBackup(JSON.stringify({ ...b, data: {} }), 'furigana', ['dict']).ok, false);
 });
 
 test('入力の上限: 10,000 字で切り、切った字数を返す', () => {
